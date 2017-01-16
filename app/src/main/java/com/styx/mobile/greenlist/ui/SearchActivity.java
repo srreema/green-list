@@ -1,19 +1,11 @@
-package com.styx.mobile.greenlist;
+package com.styx.mobile.greenlist.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.styx.mobile.greenlist.utils.Utils;
+import com.styx.mobile.greenlist.R;
 
 public class SearchActivity extends AppCompatActivity {
     boolean isFilterVisible = false;

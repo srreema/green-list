@@ -1,4 +1,4 @@
-package com.styx.mobile.greenlist;
+package com.styx.mobile.greenlist.ui;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -14,9 +14,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.utils.Utils;
-
-public class MainActivity extends AppCompatActivity {
+class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -27,8 +27,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/app_red"
-                    android:src="@drawable/img_building_2"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_building_2" />
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -50,36 +50,6 @@
                 android:background="@color/grey_300" />
 
             <TextView
-                android:id="@+id/trips_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:background="?selectableItemBackground"
-                android:clickable="true"
-                android:fontFamily="@string/font_family_light"
-                android:padding="16dp"
-                android:text="Upcoming Trips"
-                android:textColor="@color/app_dark_100"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/blog_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_profile_name"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:background="?selectableItemBackground"
-                android:clickable="true"
-                android:fontFamily="@string/font_family_light"
-                android:padding="16dp"
-                android:text="Travel Blogs"
-                android:textColor="@color/app_dark_100"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_album"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_profile_name"
@@ -88,30 +58,22 @@
                 android:background="?selectableItemBackground"
                 android:fontFamily="@string/font_family_light"
                 android:padding="16dp"
-                android:text="Album of the Dawn"
+                android:text="Category"
                 android:textColor="@color/app_dark_100"
                 android:textSize="16sp" />
 
-            <LinearLayout
-                android:id="@+id/search_layout"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_profile_name"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginRight="0dp"
-                    android:background="?selectableItemBackground"
-                    android:fontFamily="@string/font_family_light"
-                    android:padding="16dp"
-                    android:text="Search"
-                    android:textColor="@color/app_dark_100"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:layout_below="@+id/tv_profile_name"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:background="?selectableItemBackground"
+                android:fontFamily="@string/font_family_light"
+                android:padding="16dp"
+                android:text="Search"
+                android:textColor="@color/app_dark_100"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/btn_help_feedback"
@@ -123,7 +85,7 @@
                 android:clickable="true"
                 android:fontFamily="@string/font_family_light"
                 android:padding="16dp"
-                android:text="Feedback"
+                android:text="Settings"
                 android:textColor="@color/app_dark_100"
                 android:textSize="16sp" />
 
@@ -138,7 +100,7 @@
                 android:clickable="true"
                 android:fontFamily="@string/font_family_light"
                 android:padding="16dp"
-                android:text="Rate the App"
+                android:text="Help"
                 android:textColor="@color/app_dark_100"
                 android:textSize="16sp" />
 

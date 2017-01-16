@@ -1,13 +1,12 @@
-package com.styx.mobile.greenlist;
+package com.styx.mobile.greenlist.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.styx.mobile.greenlist.R;
 
 import eu.fiskur.simpleviewpager.ImageURLLoader;
 import eu.fiskur.simpleviewpager.SimpleViewPager;
@@ -20,7 +19,7 @@ public class ListingDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        SimpleViewPager simpleViewPager = (SimpleViewPager) findViewById(R.id.iv_hero_image);
+        simpleViewPager = (SimpleViewPager) findViewById(R.id.iv_hero_image);
 
         String[] demoUrlArray = new String[]{
                 "http://fiskur.eu/apps/simpleviewpagerdemo/001.jpg",
