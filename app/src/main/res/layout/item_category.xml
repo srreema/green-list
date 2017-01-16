@@ -5,21 +5,27 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_margin="8dp"
-        android:adjustViewBounds="true"
-        android:background="@drawable/shape_rounded_dialog"
-        android:scaleType="centerCrop"
-        android:src="@drawable/img_city_8" />
+        android:id="@+id/iv_category_1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_circle_ex_black"
+        android:padding="16dp"
+        android:src="@drawable/ic_email_black_24dp"
+        android:tag="R.drawable.shape_circle_ex_black"
+        android:tint="@color/text_black" />
 
     <TextView
         android:id="@+id/tv_throw_location_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@string/font_family_medium"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@string/font_family_regular"
+        android:gravity="center"
         android:text="Category"
-        android:textColor="@color/app_light"
-        android:textSize="16sp"
-        android:textStyle="normal" />
+        android:textColor="@color/text_black"
+        android:textSize="10sp" />
 </LinearLayout>

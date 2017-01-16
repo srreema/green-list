@@ -12,6 +12,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:elevation="2dp"
+        android:layout_gravity="right"
         android:gravity="center_vertical">
 
         <ImageView
@@ -20,7 +21,6 @@
             android:padding="3dp"
             android:src="@drawable/ic_search_black_24dp"
             android:tint="@color/medium_green_800" />
-
         <EditText
             android:id="@+id/editTextSearch"
             android:layout_width="match_parent"
