@@ -34,7 +34,12 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
 
 # Keystore files
 *.jks
+
+# Android Studio
+.idea/
+*.iws
+*.ipr
+*.swp
