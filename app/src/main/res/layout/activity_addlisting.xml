@@ -145,8 +145,15 @@
                         android:textStyle="bold"
                         android:visibility="gone" />
 
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/asdad"
+                        android:layout_below="@+id/tv_throw_creator_name"></Spinner>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
+                        android:id="@+id/asdad"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_throw_location_name"
@@ -256,15 +263,6 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/img_city_4" />
 
-                <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/shape_rounded_dialog"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_city_20" />
             </LinearLayout>
         </RelativeLayout>
 

@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.utils.Utils;
-class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
