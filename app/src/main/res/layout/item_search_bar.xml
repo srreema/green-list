@@ -22,10 +22,14 @@
             android:tint="@color/medium_green_800" />
 
         <EditText
+            android:id="@+id/editTextSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:hint="Where do you want to go?"
+            android:hint="Where do you want to go   ?"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
             android:padding="16dp"
             android:textColor="@color/app_dark_100"
             android:textColorHint="@color/medium_green_800"

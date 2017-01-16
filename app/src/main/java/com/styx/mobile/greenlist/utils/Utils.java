@@ -44,8 +44,7 @@ public class Utils {
         }, delayTime);
     }
 
-    public static void startActivityWithClipReveal(Context context, Class landingActivity, View view) {
-        Intent intent = new Intent(context, landingActivity);
+    public static void startActivityWithClipReveal(Intent intent, Context context, View view) {
         ActivityOptions options = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             options = ActivityOptions.makeClipRevealAnimation(view, 0, 0,
