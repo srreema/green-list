@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         fabAddListing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListingDetailActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                 Utils.startActivityWithClipReveal(intent, MainActivity.this, fabAddListing);
             }
         });
