@@ -15,7 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
+import com.styx.mobile.greenlist.models.Parameter;
+import com.styx.mobile.greenlist.models.Type;
 import com.styx.mobile.greenlist.utils.Utils;
+
+import io.realm.Realm;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -24,6 +29,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initButton();
         //initializeToolbar();
+        runDataBaseInit();
+
+    }
+
+    private void runDataBaseInit() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Type typeCar = realm.createObject(Type.class);
+        typeCar.setName("Car");
+        typeCar.getParameters().add(new Parameter("Brand"));
+        typeCar.getParameters().add(new Parameter("Year Purchased"));
+        typeCar.getParameters().add(new Parameter("Color"));
+        realm.commitTransaction();
     }
 
     private void initButton() {

@@ -8,12 +8,8 @@ import com.styx.mobile.greenlist.models.Photo;
 import com.styx.mobile.greenlist.models.Type;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
-import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import io.realm.Realm;
-import io.realm.RealmObject;
+import io.realm.RealmConfiguration;
 
 /**
  * Created by amalg on 17-01-2017.
@@ -24,25 +20,18 @@ public class GreenListApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initializeRealmStetho();
+
         boolean isFirstTime = Utils.isFirstTime(getApplicationContext());
-        if (isFirstTime) {
-            runDataBaseInit();
-        }
+       // if (isFirstTime) {
+        //}
     }
 
-    private void runDataBaseInit() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        Photo photo = realm.createObject(Photo.class);
-        photo.setPath("Path");
-        realm.commitTransaction();
-    }
 
-    public GreenListApplication() {
-    }
 
     private void initializeRealmStetho() {
         Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
 
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
