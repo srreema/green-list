@@ -80,7 +80,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@string/font_family_regular"
                     android:gravity="center"
-                    android:text="Exhibitions"
+                    android:text="Automotives"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -114,7 +114,7 @@
                     android:fontFamily="@string/font_family_regular"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="Food festivals"
+                    android:text="Rental Places"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -148,7 +148,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@string/font_family_regular"
                     android:gravity="center"
-                    android:text="Music &amp; concerts"
+                    android:text="Electronics &amp; Gadgets"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -191,7 +191,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@string/font_family_regular"
                     android:gravity="center"
-                    android:text="Networking events"
+                    android:text="Furniture"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
             </LinearLayout>

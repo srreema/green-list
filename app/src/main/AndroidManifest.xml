@@ -3,6 +3,7 @@
     package="com.styx.mobile.greenlist">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:name=".utils.GreenListApplication"
         android:allowBackup="true"
@@ -20,6 +21,10 @@
         <activity android:name=".ui.AddListingActivity" />
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.ListingDetailActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDdJSUOeC52Uo_PVxT054xGgtcugmMCl8A" />
     </application>
 
 </manifest>
