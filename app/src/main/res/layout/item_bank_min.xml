@@ -22,7 +22,7 @@
             android:paddingTop="16dp">
 
             <RelativeLayout
-                android:id="@+id/circle_layout"
+                android:id="@+id/relativeLayoutCircle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
@@ -42,10 +42,10 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/throw_header_layout"
+                android:id="@+id/relativeLayoutHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/circle_layout"
+                android:layout_toRightOf="@+id/relativeLayoutCircle"
                 android:paddingBottom="8dp"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp">
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/tv_throw_location_name"
+                        android:id="@+id/editTextListingName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/font_family_medium"
@@ -66,10 +66,10 @@
                         android:textStyle="normal" />
 
                     <TextView
-                        android:id="@+id/tv_throw_creator_name_2"
+                        android:id="@+id/textViewLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_throw_location_name"
+                        android:layout_below="@+id/editTextListingName"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="0dp"
                         android:fontFamily="@string/font_family_regular"
@@ -78,10 +78,10 @@
                         android:textSize="12sp" />
 
                     <LinearLayout
-                        android:id="@+id/tv_throw_creator_name"
+                        android:id="@+id/linearLayoutLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_throw_creator_name_2"
+                        android:layout_below="@+id/textViewLocation"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical">
 
@@ -109,7 +109,7 @@
                         android:id="@+id/tv_throw_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_throw_creator_name"
+                        android:layout_below="@+id/linearLayoutLocation"
                         android:fontFamily="@string/font_family_light"
                         android:text="Free WiFi, Free Cancellation, Pay at Hotel"
                         android:textColor="@color/app_dark_100"
@@ -120,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@+id/tv_throw_location_name"
+                        android:layout_below="@+id/editTextListingName"
                         android:layout_marginTop="0dp"
                         android:background="@drawable/shape_bg_discount"
                         android:fontFamily="@string/font_family_medium"
@@ -138,10 +138,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/images_layout"
+                android:id="@+id/linearLayoutImages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/throw_header_layout">
+                android:layout_below="@+id/relativeLayoutHeader">
 
                 <ImageView
                     android:id="@+id/iv_image_1"
@@ -222,7 +222,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/images_layout"
+                android:layout_below="@+id/linearLayoutImages"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/shape_btn_hollow_black"
