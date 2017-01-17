@@ -10,8 +10,60 @@ import io.realm.RealmObject;
 public class Listing extends RealmObject {
     private String title;
     private String category;
-    private RealmObject type;
+    private Type type;
     private RealmList<Photo> photos;
     private Location location;
     private RealmList<AdditionalParameter> parameters;
+
+    public Listing() {
+
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public RealmList<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(RealmList<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public RealmList<AdditionalParameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(RealmList<AdditionalParameter> parameters) {
+        this.parameters = parameters;
+    }
 }

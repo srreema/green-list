@@ -9,7 +9,13 @@ import io.realm.RealmObject;
 
 public class Parameter extends RealmObject {
     public String name;
-    public Parameter(String name){
-        this.name=name;
+    public Parameter(){}
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
