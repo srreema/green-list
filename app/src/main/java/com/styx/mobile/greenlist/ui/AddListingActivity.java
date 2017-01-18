@@ -11,7 +11,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,6 +25,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ImageAdapter;
+import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Location;
 import com.styx.mobile.greenlist.models.Type;
@@ -45,8 +48,9 @@ public class AddListingActivity extends AppCompatActivity {
     Listing newListing;
     Spinner spinnerType;
     ImageAdapter imageAdapter;
+    QuestionnaireAdapter questionnaireAdapter;
     TextView textViewLocationName;
-    RecyclerView recyclerViewImageList;
+    RecyclerView recyclerViewImageList, recyclerViewQuestionnaire;
     LinearLayout linearLayoutLocation;
     EditText editTextName, editTextMinPrice, editTextMaxPrice;
     final int REQUEST_CODE_PLACE_PICKER = 1000;
@@ -71,8 +75,11 @@ public class AddListingActivity extends AppCompatActivity {
         editTextMinPrice = (EditText) findViewById(R.id.editTextMinPrice);
         editTextMaxPrice = (EditText) findViewById(R.id.editTextMaxPrice);
         linearLayoutLocation = (LinearLayout) findViewById(R.id.linearLayoutLocation);
+
+        /** Image Loader RecyclerView **/
         recyclerViewImageList = (RecyclerView) findViewById(R.id.recyclerViewImageList);
         recyclerViewImageList.setHasFixedSize(true);
+
         imageAdapter = new ImageAdapter(AddListingActivity.this, new ImageAdapter.OnImageViewClickListener() {
             @Override
             public void onImageViewClick(int position) {
@@ -81,10 +88,11 @@ public class AddListingActivity extends AppCompatActivity {
         });
         recyclerViewImageList.setAdapter(imageAdapter);
 
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerViewImageList.setLayoutManager(llm);
+        LinearLayoutManager linearLayoutManagerImageList = new LinearLayoutManager(this);
+        linearLayoutManagerImageList.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerViewImageList.setLayoutManager(linearLayoutManagerImageList);
 
+        /** Location Picker **/
         linearLayoutLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +106,7 @@ public class AddListingActivity extends AppCompatActivity {
             }
         });
 
+        /** Listing Type Spinner **/
         ArrayList<String> arrayList = new ArrayList<>();
         RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
         for (Type type : typeRealmResults) {
@@ -105,6 +114,30 @@ public class AddListingActivity extends AppCompatActivity {
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         spinnerType.setAdapter(adapter);
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateAdditionalParameters((String) spinnerType.getSelectedItem());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        /** Questionnaire RecyclerView **/
+        recyclerViewQuestionnaire = (RecyclerView) findViewById(R.id.recyclerViewQuestionnaire);
+        recyclerViewQuestionnaire.setHasFixedSize(true);
+
+        questionnaireAdapter = new QuestionnaireAdapter();
+        recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
+
+        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
+        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
+    }
+
+    private void updateAdditionalParameters(String selectedItem) {
+
     }
 
     private void pickImage(int position) {
@@ -144,6 +177,7 @@ public class AddListingActivity extends AppCompatActivity {
     private void uploadImage(Bitmap bitmap) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ENGLISH);
         String fileName = imagePrefix + dateFormat.format(new Date()) + ".jpg";
+        Log.d("GTA", "File Created " + fileName);
         new SaveImageAsync().execute(bitmap, fileName);
     }
 

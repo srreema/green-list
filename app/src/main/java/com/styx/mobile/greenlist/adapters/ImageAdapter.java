@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private ArrayList<String> imageList;
     private Context context;
-    OnImageViewClickListener onImageViewClickListener;
+    private OnImageViewClickListener onImageViewClickListener;
     private final String LIST_EMPTY_IMAGE = "LIST_EMPTY";
 
     public ImageAdapter(Context context, OnImageViewClickListener onImageViewClickListener) {
@@ -67,7 +67,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         holder.imageThumb.setOnLongClickListener(new View.OnLongClickListener() {
                                                      @Override
                                                      public boolean onLongClick(View v) {
-                                                         Log.e("GTA","GTA");
                                                          if (imageList.size() > 1)
                                                              removeImage(holder.getAdapterPosition());
                                                          return true;
