@@ -1,5 +1,7 @@
 package com.styx.mobile.greenlist.models;
 
+import java.util.ArrayList;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -47,8 +49,11 @@ public class Listing extends RealmObject {
         return photos;
     }
 
-    public void setPhotos(RealmList<Photo> photos) {
-        this.photos = photos;
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = new RealmList<>();
+        for (String thisPhoto : photos) {
+            this.photos.add(new Photo(thisPhoto));
+        }
     }
 
     public Location getLocation() {

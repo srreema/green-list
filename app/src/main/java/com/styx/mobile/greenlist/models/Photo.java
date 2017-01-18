@@ -8,9 +8,15 @@ import io.realm.RealmObject;
 
 public class Photo extends RealmObject {
     String path;
-    public Photo(){
+
+    public Photo() {
 
     }
+
+    public Photo(String path) {
+        this.path = path;
+    }
+
     public String getPath() {
         return path;
     }

@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 
 public class Utils {
-
+    public static final String CONST_IMAGE_DIRECTORY = "images";
 
     public static void animationIn(final View view, final int animation, int delayTime, final Context context) {
         Handler handler = new Handler();
