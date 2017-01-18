@@ -11,8 +11,12 @@ public class Type extends RealmObject {
     public String name;
     public RealmList<Parameter> parameters;
 
-    public Type() {
+    public Type(String name, RealmList<Parameter> parameters) {
+        this.name = name;
+        this.parameters = parameters;
+    }
 
+    public Type() {
     }
 
     public String getName() {

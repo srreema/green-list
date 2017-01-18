@@ -26,21 +26,23 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ImageAdapter;
 import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
+import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Location;
+import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.models.Type;
 import com.styx.mobile.greenlist.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class AddListingActivity extends AppCompatActivity {
@@ -124,20 +126,27 @@ public class AddListingActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
         /** Questionnaire RecyclerView **/
         recyclerViewQuestionnaire = (RecyclerView) findViewById(R.id.recyclerViewQuestionnaire);
         recyclerViewQuestionnaire.setHasFixedSize(true);
 
-        questionnaireAdapter = new QuestionnaireAdapter();
-        recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
-
-        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
-        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
     }
 
     private void updateAdditionalParameters(String selectedItem) {
+        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
+        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
+        RealmList<Parameter> parameterList = realm.where(Type.class).equalTo("name", selectedItem).findFirst().getParameters();
+        questionnaireAdapter = new QuestionnaireAdapter(generateParameters(parameterList));
+        recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
+        questionnaireAdapter.notifyDataSetChanged();
+    }
 
+    private ArrayList<String> generateParameters(RealmList<Parameter> parameterList) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (Parameter parameter : parameterList) {
+            arrayList.add(parameter.getName());
+        }
+        return arrayList;
     }
 
     private void pickImage(int position) {
@@ -187,7 +196,6 @@ public class AddListingActivity extends AppCompatActivity {
         realm.close();
     }
 
-
     private class SaveImageAsync extends AsyncTask<Object, Void, Boolean> {
         String filepath;
         String fileName;
@@ -215,7 +223,7 @@ public class AddListingActivity extends AppCompatActivity {
             File file = new File(directory, fileName);
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
-                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                bitmapImage.compress(Bitmap.CompressFormat.PNG, 70, fileOutputStream);
                 fileOutputStream.close();
             } catch (Exception e) {
                 errorResponse = e.toString();

@@ -29,19 +29,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initButton();
         //initializeToolbar();
-        runDataBaseInit();
+        if (Utils.isFirstTime(MainActivity.this))
+            runDataBaseInit();
 
     }
 
     private void runDataBaseInit() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
+
         Type typeCar = realm.createObject(Type.class);
         typeCar.setName("Car");
         typeCar.getParameters().add(new Parameter("Brand"));
         typeCar.getParameters().add(new Parameter("Year Purchased"));
         typeCar.getParameters().add(new Parameter("Color"));
         realm.commitTransaction();
+
+        realm.beginTransaction();
+
+        Type typeFlat = realm.createObject(Type.class);
+        typeFlat.setName("Flat");
+        typeFlat.getParameters().add(new Parameter("Color"));
+        typeFlat.getParameters().add(new Parameter("Model"));
+        typeFlat.getParameters().add(new Parameter("Wheels"));
+        realm.commitTransaction();
+
+
     }
 
     private void initButton() {
