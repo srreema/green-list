@@ -6,7 +6,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
- * Created by amalg on 16-01-2017.
+ *
  */
 
 public class Listing extends RealmObject {

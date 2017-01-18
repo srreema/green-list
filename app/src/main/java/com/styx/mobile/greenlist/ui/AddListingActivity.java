@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -30,7 +31,11 @@ import com.styx.mobile.greenlist.utils.Utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -46,7 +51,7 @@ public class AddListingActivity extends AppCompatActivity {
     EditText editTextName, editTextMinPrice, editTextMaxPrice;
     final int REQUEST_CODE_PLACE_PICKER = 1000;
     final int REQUEST_CODE_IMAGE_PICKER = 1001;
-    final String imagePrefix = "image_";
+    final String imagePrefix = "img_";
     PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
     @Override
@@ -127,9 +132,7 @@ public class AddListingActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                        String fileName = imagePrefix + imageAdapter.getItemCount() + ".jpg";
-                        new SaveImageAsync().execute(bitmap, fileName);
+                        uploadImage(MediaStore.Images.Media.getBitmap(getContentResolver(), uri));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -138,47 +141,56 @@ public class AddListingActivity extends AppCompatActivity {
         }
     }
 
+    private void uploadImage(Bitmap bitmap) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ENGLISH);
+        String fileName = imagePrefix + dateFormat.format(new Date()) + ".jpg";
+        new SaveImageAsync().execute(bitmap, fileName);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
         realm.close();
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage, String fileName) {
-        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
-        File directory = contextWrapper.getDir(Utils.CONST_IMAGE_DIRECTORY, Context.MODE_PRIVATE);
-        File file = new File(directory, fileName);
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return directory.getAbsolutePath();
-    }
 
     private class SaveImageAsync extends AsyncTask<Object, Void, Boolean> {
         String filepath;
         String fileName;
+        String errorResponse;
 
         @Override
         protected Boolean doInBackground(Object... params) {
-            filepath = saveToInternalStorage((Bitmap) params[0], (String) params[1]);
-            fileName = (String) params[1];
+            saveToInternalStorage((Bitmap) params[0], (String) params[1]);
             return true;
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            imageAdapter.addImage(filepath + "/" + fileName);
-            newListing.setPhotos(imageAdapter.getImageList());
+            if (result) {
+                imageAdapter.addImage(filepath + "/" + fileName);
+                newListing.setPhotos(imageAdapter.getImageList());
+            } else {
+                Toast.makeText(AddListingActivity.this, "", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private boolean saveToInternalStorage(Bitmap bitmapImage, String fileName) {
+            ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+            File directory = contextWrapper.getDir(Utils.CONST_IMAGE_DIRECTORY, Context.MODE_PRIVATE);
+            File file = new File(directory, fileName);
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                fileOutputStream.close();
+            } catch (Exception e) {
+                errorResponse = e.toString();
+                e.printStackTrace();
+                return false;
+            }
+            this.fileName = fileName;
+            this.filepath = directory.getAbsolutePath();
+            return true;
         }
     }
 }
