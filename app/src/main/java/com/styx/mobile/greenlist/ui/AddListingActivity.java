@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.PhoneNumberUtils;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,7 +63,7 @@ public class AddListingActivity extends AppCompatActivity {
     TextView textViewLocationName;
     RecyclerView recyclerViewImageList, recyclerViewQuestionnaire;
     LinearLayout linearLayoutLocation;
-    EditText editTextName, editTextMinPrice, editTextMaxPrice;
+    EditText editTextName, editTextMinPrice, editTextMaxPrice, editTextContactNumber;
 
     final int REQUEST_CODE_PLACE_PICKER = 1000;
     final int REQUEST_CODE_IMAGE_PICKER = 1001;
@@ -87,6 +89,7 @@ public class AddListingActivity extends AppCompatActivity {
         editTextMaxPrice = (EditText) findViewById(R.id.editTextMaxPrice);
         linearLayoutLocation = (LinearLayout) findViewById(R.id.linearLayoutLocation);
         textViewSaveButton = (TextView) findViewById(R.id.textViewSaveButton);
+        editTextContactNumber = (EditText) findViewById(R.id.editTextContactNumber);
 
         /** Image List **/
         recyclerViewImageList = (RecyclerView) findViewById(R.id.recyclerViewImageList);
@@ -166,7 +169,7 @@ public class AddListingActivity extends AppCompatActivity {
         final Float minPrice = Float.parseFloat(editTextMinPrice.getText().toString());
         final Float maxPrice = Float.parseFloat(editTextMaxPrice.getText().toString());
         final String typeName = spinnerType.getSelectedItem().toString();
-
+        final String contactNumber = PhoneNumberUtils.formatNumber(editTextContactNumber.getText().toString());
         final ArrayList<String> imageList = imageAdapter.getImageList();
         final ArrayList<Pair<String>> thisQuestionnaire = questionnaireAdapter.getThisQuestionnaire();
 
@@ -176,10 +179,16 @@ public class AddListingActivity extends AppCompatActivity {
             return false;
         }
 
+        if (TextUtils.isEmpty(contactNumber)) {
+            Toast.makeText(AddListingActivity.this, "Enter contact number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         if (locationData == null) {
             Toast.makeText(AddListingActivity.this, "Select location", Toast.LENGTH_SHORT).show();
             return false;
         }
+
         if (imageList.get(0).equals(ImageAdapter.LIST_EMPTY_IMAGE)) {
             Toast.makeText(AddListingActivity.this, "At least one image required", Toast.LENGTH_SHORT).show();
             return false;
@@ -192,7 +201,7 @@ public class AddListingActivity extends AppCompatActivity {
                 Number currentMaxId = realmInstance.where(Listing.class).max("Id");
                 long newId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
 
-                Listing newListing = realmInstance.createObject(Listing.class,newId);
+                Listing newListing = realmInstance.createObject(Listing.class, newId);
                 newListing.setTitle(title);
 
                 Location locationObject = realmInstance.createObject(Location.class);
@@ -202,6 +211,7 @@ public class AddListingActivity extends AppCompatActivity {
                 newListing.setLocation(locationObject);
 
                 newListing.setMinPrice(minPrice);
+                newListing.setContactNumber(contactNumber);
                 newListing.setMaxPrice(maxPrice);
                 newListing.setType(realmInstance.where(Type.class).equalTo("name", typeName).findFirst());
 

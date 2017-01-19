@@ -19,6 +19,7 @@ public class Listing extends RealmObject {
     private String title;
     private String category;
     private Type type;
+    private String contactNumber;
     private RealmList<Photo> photos;
     private Float minPrice, maxPrice;
     private Location location;
@@ -100,4 +101,11 @@ public class Listing extends RealmObject {
         this.parameters = parameters;
     }
 
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
 }

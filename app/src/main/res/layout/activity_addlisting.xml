@@ -92,14 +92,13 @@
 
                     <EditText
                         android:id="@+id/editTextMaxPrice"
-
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/font_family_medium"
                         android:hint="3000"
-                        android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLines="1"
+                        android:nextFocusDown="@+id/editTextContactNumber"
                         android:textAlignment="center"
                         android:textColor="@color/medium_green_900"
                         android:textSize="18sp"
@@ -137,11 +136,45 @@
 
         </RelativeLayout>
 
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/linearLayoutContactNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativeLayoutHeader"
+            android:weightSum="1">
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/textViewQuestion"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3"
+                android:fontFamily="@string/font_family_light"
+                android:gravity="center_vertical"
+                android:padding="2dp"
+                android:text="Contact"
+                android:textColor="@color/app_dark_100"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/editTextContactNumber"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".7"
+                android:digits="0123456789+"
+                android:fontFamily="@string/font_family_light"
+                android:hint="Number"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:textColor="@color/app_dark_100"
+                android:textSize="12sp" />
+        </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewImageList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/relativeLayoutHeader"
+            android:layout_below="@+id/linearLayoutContactNumber"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:adjustViewBounds="true" />

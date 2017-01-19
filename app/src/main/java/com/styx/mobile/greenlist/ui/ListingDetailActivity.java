@@ -1,8 +1,15 @@
 package com.styx.mobile.greenlist.ui;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +33,8 @@ public class ListingDetailActivity extends AppCompatActivity {
     Listing thisListing;
 
     TextView editTextListingName;
+    TextView textViewType;
+    TextView buttonCall;
     TextView textViewTitle;
 
     @Override
@@ -44,6 +53,8 @@ public class ListingDetailActivity extends AppCompatActivity {
         imageViewPager = (SimpleViewPager) findViewById(R.id.iv_hero_image);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         editTextListingName = (TextView) findViewById(R.id.editTextListingName);
+        buttonCall = (TextView) findViewById(R.id.buttonCall);
+        textViewType = (TextView) findViewById(R.id.textViewType);
 
 
         ArrayList<String> photoList = new ArrayList<>();
@@ -61,7 +72,11 @@ public class ListingDetailActivity extends AppCompatActivity {
         imageViewPager.showIndicator(indicatorColor, selectedIndicatorColor);
 
         textViewTitle.setText(thisListing.getTitle());
+        textViewType.setText(thisListing.getType().getName());
         editTextListingName.setText(thisListing.getLocation().getName());
+
+        buttonCall.setText(thisListing.getContactNumber());
+
     }
 
     @Override

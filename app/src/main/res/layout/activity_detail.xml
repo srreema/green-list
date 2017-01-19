@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true">
 
 
@@ -20,9 +21,9 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/iv_hero_image"
-        android:layout_alignParentStart="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/font_family_medium"
-                    android:text="New Delhi"
+                    tools:text="New Delhi"
                     android:textAllCaps="true"
                     android:textColor="@color/app_dark_200"
                     android:textSize="20sp"
@@ -47,12 +48,12 @@
                     android:transitionName="shared_title" />
 
                 <TextView
-                    android:id="@+id/tv_label_2"
+                    android:id="@+id/textViewType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textViewTitle"
                     android:fontFamily="@string/font_family_regular"
-                    android:text="1200 hotels in this city"
+                    tools:text="1200 hotels in this city"
                     android:textColor="#BCBDBC"
                     android:textSize="14sp" />
 
@@ -82,12 +83,6 @@
             </RelativeLayout>
 
             <include layout="@layout/item_bank_min" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="24dp"
-                android:background="@color/medium_green_600" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
