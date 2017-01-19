@@ -74,10 +74,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/font_family_medium"
+                        android:hint="2000"
                         android:inputType="number"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/editTextMaxPrice"
-                        android:text="2000"
+                        android:textAlignment="center"
                         android:textColor="@color/medium_green_900"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -91,12 +92,15 @@
 
                     <EditText
                         android:id="@+id/editTextMaxPrice"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/font_family_medium"
+                        android:hint="3000"
+                        android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLines="1"
-                        android:text="2000"
+                        android:textAlignment="center"
                         android:textColor="@color/medium_green_900"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -163,10 +167,10 @@
                 android:layout_weight="0.2" />
 
             <TextView
+                android:id="@+id/textViewSaveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:id="@+id/textViewSaveButton"
                 android:layout_marginTop="4dp"
                 android:layout_weight="0.05"
                 android:background="@drawable/shape_btn_hollow_black"

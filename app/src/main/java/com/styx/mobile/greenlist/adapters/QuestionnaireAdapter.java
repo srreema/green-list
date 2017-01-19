@@ -13,9 +13,6 @@ import com.styx.mobile.greenlist.utils.Pair;
 
 import java.util.ArrayList;
 
-/**
- *
- */
 
 public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdapter.ViewHolder> {
     private ArrayList<Pair<String>> thisQuestionnaire;
