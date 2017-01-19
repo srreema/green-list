@@ -90,6 +90,15 @@ public class MainActivity extends AppCompatActivity {
                 runDataBaseInit();
             }
         });
+
+        findViewById(R.id.iv_category_2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ListingDetailActivity.class);
+//                intent.putExtra()
+                Utils.startActivityWithClipReveal(intent, MainActivity.this, editTextSearch);
+            }
+        });
     }
 
     private void initializeToolbar() {
