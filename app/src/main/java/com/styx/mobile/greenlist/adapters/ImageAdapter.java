@@ -31,12 +31,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
     public void addImage(String newImageLocation) {
+        imageList.add(newImageLocation);
+        notifyItemInserted(imageList.size());
+
+        /**Remove the placeholder image **/
         if (imageList.get(0).equals(LIST_EMPTY_IMAGE)) {
             imageList.remove(0);
             notifyItemRemoved(0);
         }
-        imageList.add(newImageLocation);
-        notifyItemInserted(imageList.size());
     }
 
     public void removeImage(int position) {
@@ -65,15 +67,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             }
         });
         holder.imageThumb.setOnLongClickListener(new View.OnLongClickListener() {
-                                                     @Override
-                                                     public boolean onLongClick(View v) {
-                                                         if (imageList.size() > 1)
-                                                             removeImage(holder.getAdapterPosition());
-                                                         return true;
-                                                     }
-                                                 }
-
-        );
+            @Override
+            public boolean onLongClick(View v) {
+                onImageViewClickListener.onImageViewLongClick(holder.getAdapterPosition());
+                return true;
+            }
+        });
         if (!imageList.get(holder.getAdapterPosition()).equals(LIST_EMPTY_IMAGE))
             Picasso.with(context).load(new File(imageList.get(position))).into(holder.imageThumb);
     }
@@ -94,5 +93,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     public interface OnImageViewClickListener {
         void onImageViewClick(int position);
+
+        void onImageViewLongClick(int position);
     }
 }

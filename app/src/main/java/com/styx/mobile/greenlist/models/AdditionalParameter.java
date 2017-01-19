@@ -7,11 +7,12 @@ import io.realm.RealmObject;
  */
 
 public class AdditionalParameter extends RealmObject {
-    String key;
-    String value;
+    private String key;
+    private String value;
 
-    public AdditionalParameter(String question) {
-        this.key = question;
+    public AdditionalParameter(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
     public AdditionalParameter() {

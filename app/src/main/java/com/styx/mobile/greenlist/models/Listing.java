@@ -67,11 +67,8 @@ public class Listing extends RealmObject {
         return photos;
     }
 
-    public void setPhotos(ArrayList<String> photos) {
-        this.photos = new RealmList<>();
-        for (String thisPhoto : photos) {
-            this.photos.add(new Photo(thisPhoto));
-        }
+    public void setPhotos(RealmList<Photo> photos) {
+        this.photos = photos;
     }
 
     public Location getLocation() {

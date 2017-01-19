@@ -21,10 +21,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.vision.text.Text;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ImageAdapter;
 import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
@@ -32,7 +30,9 @@ import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Location;
 import com.styx.mobile.greenlist.models.Parameter;
+import com.styx.mobile.greenlist.models.Photo;
 import com.styx.mobile.greenlist.models.Type;
+import com.styx.mobile.greenlist.utils.Pair;
 import com.styx.mobile.greenlist.utils.Utils;
 
 import java.io.File;
@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import io.realm.Realm;
@@ -49,18 +50,24 @@ import io.realm.RealmResults;
 
 public class AddListingActivity extends AppCompatActivity {
     Realm realm;
-    Location location;
-    Spinner spinnerType;
+
+    HashMap<String, String> locationData;
+
     ImageAdapter imageAdapter;
-    TextView textViewSaveButton;
     QuestionnaireAdapter questionnaireAdapter;
+
+    Spinner spinnerType;
+    TextView textViewSaveButton;
     TextView textViewLocationName;
     RecyclerView recyclerViewImageList, recyclerViewQuestionnaire;
     LinearLayout linearLayoutLocation;
     EditText editTextName, editTextMinPrice, editTextMaxPrice;
+
     final int REQUEST_CODE_PLACE_PICKER = 1000;
     final int REQUEST_CODE_IMAGE_PICKER = 1001;
+
     final String imagePrefix = "img_";
+
     PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
     @Override
@@ -81,14 +88,23 @@ public class AddListingActivity extends AppCompatActivity {
         linearLayoutLocation = (LinearLayout) findViewById(R.id.linearLayoutLocation);
         textViewSaveButton = (TextView) findViewById(R.id.textViewSaveButton);
 
-        /** Image Loader RecyclerView **/
+        /** Image List **/
         recyclerViewImageList = (RecyclerView) findViewById(R.id.recyclerViewImageList);
         recyclerViewImageList.setHasFixedSize(true);
 
         imageAdapter = new ImageAdapter(AddListingActivity.this, new ImageAdapter.OnImageViewClickListener() {
             @Override
             public void onImageViewClick(int position) {
-                pickImage(position);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_IMAGE_PICKER);
+            }
+
+            @Override
+            public void onImageViewLongClick(int position) {
+                if (imageAdapter.getImageList().size() > 1)
+                    imageAdapter.removeImage(position);
             }
         });
         recyclerViewImageList.setAdapter(imageAdapter);
@@ -119,94 +135,116 @@ public class AddListingActivity extends AppCompatActivity {
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         spinnerType.setAdapter(adapter);
+
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updateAdditionalParameters((String) spinnerType.getSelectedItem());
+                updateQuestionnaire((String) spinnerType.getSelectedItem());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        /** Questionnaire RecyclerView **/
+
+        /** Questionnaire List **/
         recyclerViewQuestionnaire = (RecyclerView) findViewById(R.id.recyclerViewQuestionnaire);
         recyclerViewQuestionnaire.setHasFixedSize(true);
 
         textViewSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String title = editTextName.getText().toString();
-                final Float minPrice = Float.parseFloat(editTextMinPrice.getText().toString());
-                final Float maxPrice = Float.parseFloat(editTextMaxPrice.getText().toString());
-                final String type = spinnerType.getSelectedItem().toString();
-                final ArrayList<String> imageList = imageAdapter.getImageList();
-                final RealmList<AdditionalParameter> questionnaireList = questionnaireAdapter.getAdditionalParameters();
-                Log.e("GTA", "Save?");
-
-                if (location == null) {
-                    Toast.makeText(AddListingActivity.this, "Location Empty", Toast.LENGTH_SHORT).show();
-                    return;
+                if (doSaveData()) {
+                    finish();
                 }
-                if (imageList.get(0).equals(ImageAdapter.LIST_EMPTY_IMAGE)) {
-                    Toast.makeText(AddListingActivity.this, "At least one image required", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                realm.beginTransaction();
-                Listing newListing = realm.createObject(Listing.class);
-                newListing.setTitle(title);
-                Location mL=realm.createObject(Location.class);
-                mL.setLatitude(location.getLatitude());
-                mL.setLongitude(location.getLongitude());
-                mL.setName(location.getName());
-                newListing.setLocation(mL);
-                newListing.setMinPrice(minPrice);
-                newListing.setMaxPrice(maxPrice);
-                newListing.setType(realm.where(Type.class).equalTo("name", type).findFirst());
-                newListing.setPhotos(imageList);
-                newListing.setParameters(questionnaireList);
-                realm.commitTransaction();
-                Toast.makeText(AddListingActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                finish();
             }
         });
     }
 
-    private void updateAdditionalParameters(String selectedItem) {
-        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
-        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
-        RealmList<Parameter> parameterList = realm.where(Type.class).equalTo("name", selectedItem).findFirst().getParameters();
-        questionnaireAdapter = new QuestionnaireAdapter(generateParameters(parameterList));
-        recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
-        questionnaireAdapter.notifyDataSetChanged();
+    private boolean doSaveData() {
+        final String title = editTextName.getText().toString();
+        final Float minPrice = Float.parseFloat(editTextMinPrice.getText().toString());
+        final Float maxPrice = Float.parseFloat(editTextMaxPrice.getText().toString());
+        final String typeName = spinnerType.getSelectedItem().toString();
+
+        final ArrayList<String> imageList = imageAdapter.getImageList();
+        final ArrayList<Pair<String>> thisQuestionnaire = questionnaireAdapter.getThisQuestionnaire();
+
+
+        if (minPrice > maxPrice) {
+            Toast.makeText(AddListingActivity.this, "Minimum price greater than maximum", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (locationData == null) {
+            Toast.makeText(AddListingActivity.this, "Select location", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (imageList.get(0).equals(ImageAdapter.LIST_EMPTY_IMAGE)) {
+            Toast.makeText(AddListingActivity.this, "At least one image required", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realmInstance) {
+                Listing newListing = realmInstance.createObject(Listing.class);
+                newListing.setTitle(title);
+
+                Location locationObject = realmInstance.createObject(Location.class);
+                locationObject.setLatitude(locationData.get("latitude"));
+                locationObject.setLongitude(locationData.get("longitude"));
+                locationObject.setName(locationData.get("name"));
+                newListing.setLocation(locationObject);
+
+                newListing.setMinPrice(minPrice);
+                newListing.setMaxPrice(maxPrice);
+                newListing.setType(realmInstance.where(Type.class).equalTo("name", typeName).findFirst());
+
+                for (String imageURL : imageList) {
+                    newListing.getPhotos().add(new Photo(imageURL));
+                }
+
+                for (Pair<String> questionAnswer : thisQuestionnaire) {
+                    newListing.getParameters().add(new AdditionalParameter(questionAnswer.getKey(), questionAnswer.getValue()));
+                }
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(AddListingActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return true;
     }
 
-    private ArrayList<String> generateParameters(RealmList<Parameter> parameterList) {
+    private void updateQuestionnaire(String selectedItem) {
+        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
+        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
+
+        RealmList<Parameter> parameterList = realm.where(Type.class).equalTo("name", selectedItem).findFirst().getParameters();
         ArrayList<String> arrayList = new ArrayList<>();
         for (Parameter parameter : parameterList) {
             arrayList.add(parameter.getName());
         }
-        return arrayList;
+        questionnaireAdapter = new QuestionnaireAdapter(arrayList);
+        recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
+        questionnaireAdapter.notifyDataSetChanged();
     }
 
-    private void pickImage(int position) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_IMAGE_PICKER);
-    }
-
-
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_PLACE_PICKER:
                 if (resultCode == RESULT_OK) {
                     Place place = PlacePicker.getPlace(this, data);
-                    Location location = new Location();
-                    location.setName(place.getName().toString());
-                    location.setLatitude(String.valueOf((place.getLatLng()).latitude));
-                    location.setLongitude(String.valueOf((place.getLatLng()).longitude));
-                    this.location = location;
+
+                    locationData = new HashMap<>();
+                    locationData.put("name", place.getName().toString());
+                    locationData.put("latitude", String.valueOf(String.valueOf((place.getLatLng()).latitude)));
+                    locationData.put("longitude", String.valueOf(String.valueOf((place.getLatLng()).longitude)));
+
                     textViewLocationName.setText(String.format(getString(R.string.location_name), place.getName()));
                 }
                 break;

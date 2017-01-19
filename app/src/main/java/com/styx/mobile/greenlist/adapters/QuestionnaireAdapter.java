@@ -1,43 +1,34 @@
 package com.styx.mobile.greenlist.adapters;
 
-import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
-import com.styx.mobile.greenlist.models.AdditionalParameter;
-import com.styx.mobile.greenlist.models.Type;
+import com.styx.mobile.greenlist.utils.Pair;
 
 import java.util.ArrayList;
-
-import io.realm.OrderedRealmCollection;
-import io.realm.RealmList;
-import io.realm.RealmRecyclerViewAdapter;
 
 /**
  *
  */
 
 public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdapter.ViewHolder> {
-    RealmList<AdditionalParameter> additionalParameters;
-    ArrayList<String> arrayList;
+    private ArrayList<Pair<String>> thisQuestionnaire;
 
-    public QuestionnaireAdapter(ArrayList<String> arrayList) {
-        this.arrayList = arrayList;
-        additionalParameters = new RealmList<>();
-        for (String question : arrayList) {
-            additionalParameters.add(new AdditionalParameter(question));
+    public QuestionnaireAdapter(ArrayList<String> questionList) {
+        thisQuestionnaire = new ArrayList<>();
+        for (String question : questionList) {
+            thisQuestionnaire.add(new Pair<>(question, new String()));
         }
     }
 
-    public RealmList<AdditionalParameter> getAdditionalParameters() {
-        return additionalParameters;
+    public ArrayList<Pair<String>> getThisQuestionnaire() {
+        return thisQuestionnaire;
     }
 
     @Override
@@ -48,7 +39,7 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
 
     @Override
     public void onBindViewHolder(final QuestionnaireAdapter.ViewHolder holder, final int position) {
-        holder.textViewQuestion.setText(arrayList.get(position));
+        holder.textViewQuestion.setText(thisQuestionnaire.get(position).getKey());
         holder.textViewAnswer.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -63,14 +54,14 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
             @Override
             public void afterTextChanged(Editable s) {
                 int position = holder.getAdapterPosition();
-                additionalParameters.get(position).setValue(s.toString());
+                thisQuestionnaire.get(position).setValue(s.toString());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return arrayList.size();
+        return thisQuestionnaire.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
