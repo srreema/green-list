@@ -21,8 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.vision.text.Text;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ImageAdapter;
 import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
@@ -47,9 +49,10 @@ import io.realm.RealmResults;
 
 public class AddListingActivity extends AppCompatActivity {
     Realm realm;
-    Listing newListing;
+    Location location;
     Spinner spinnerType;
     ImageAdapter imageAdapter;
+    TextView textViewSaveButton;
     QuestionnaireAdapter questionnaireAdapter;
     TextView textViewLocationName;
     RecyclerView recyclerViewImageList, recyclerViewQuestionnaire;
@@ -63,20 +66,20 @@ public class AddListingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_addlisting);
+        realm = Realm.getDefaultInstance();
+
         initializeUI();
     }
 
     void initializeUI() {
-        newListing = new Listing();
-
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
         textViewLocationName = (TextView) findViewById(R.id.textViewLocationName);
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextMinPrice = (EditText) findViewById(R.id.editTextMinPrice);
         editTextMaxPrice = (EditText) findViewById(R.id.editTextMaxPrice);
         linearLayoutLocation = (LinearLayout) findViewById(R.id.linearLayoutLocation);
+        textViewSaveButton = (TextView) findViewById(R.id.textViewSaveButton);
 
         /** Image Loader RecyclerView **/
         recyclerViewImageList = (RecyclerView) findViewById(R.id.recyclerViewImageList);
@@ -90,7 +93,7 @@ public class AddListingActivity extends AppCompatActivity {
         });
         recyclerViewImageList.setAdapter(imageAdapter);
 
-        LinearLayoutManager linearLayoutManagerImageList = new LinearLayoutManager(this);
+        final LinearLayoutManager linearLayoutManagerImageList = new LinearLayoutManager(this);
         linearLayoutManagerImageList.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewImageList.setLayoutManager(linearLayoutManagerImageList);
 
@@ -110,11 +113,11 @@ public class AddListingActivity extends AppCompatActivity {
 
         /** Listing Type Spinner **/
         ArrayList<String> arrayList = new ArrayList<>();
-        RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
+        final RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
         for (Type type : typeRealmResults) {
             arrayList.add(type.getName());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         spinnerType.setAdapter(adapter);
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -130,6 +133,43 @@ public class AddListingActivity extends AppCompatActivity {
         recyclerViewQuestionnaire = (RecyclerView) findViewById(R.id.recyclerViewQuestionnaire);
         recyclerViewQuestionnaire.setHasFixedSize(true);
 
+        textViewSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String title = editTextName.getText().toString();
+                final Float minPrice = Float.parseFloat(editTextMinPrice.getText().toString());
+                final Float maxPrice = Float.parseFloat(editTextMaxPrice.getText().toString());
+                final String type = spinnerType.getSelectedItem().toString();
+                final ArrayList<String> imageList = imageAdapter.getImageList();
+                final RealmList<AdditionalParameter> questionnaireList = questionnaireAdapter.getAdditionalParameters();
+                Log.e("GTA", "Save?");
+
+                if (location == null) {
+                    Toast.makeText(AddListingActivity.this, "Location Empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (imageList.get(0).equals(ImageAdapter.LIST_EMPTY_IMAGE)) {
+                    Toast.makeText(AddListingActivity.this, "At least one image required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                realm.beginTransaction();
+                Listing newListing = realm.createObject(Listing.class);
+                newListing.setTitle(title);
+                Location mL=realm.createObject(Location.class);
+                mL.setLatitude(location.getLatitude());
+                mL.setLongitude(location.getLongitude());
+                mL.setName(location.getName());
+                newListing.setLocation(mL);
+                newListing.setMinPrice(minPrice);
+                newListing.setMaxPrice(maxPrice);
+                newListing.setType(realm.where(Type.class).equalTo("name", type).findFirst());
+                newListing.setPhotos(imageList);
+                newListing.setParameters(questionnaireList);
+                realm.commitTransaction();
+                Toast.makeText(AddListingActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     private void updateAdditionalParameters(String selectedItem) {
@@ -166,7 +206,7 @@ public class AddListingActivity extends AppCompatActivity {
                     location.setName(place.getName().toString());
                     location.setLatitude(String.valueOf((place.getLatLng()).latitude));
                     location.setLongitude(String.valueOf((place.getLatLng()).longitude));
-                    newListing.setLocation(location);
+                    this.location = location;
                     textViewLocationName.setText(String.format(getString(R.string.location_name), place.getName()));
                 }
                 break;
@@ -191,6 +231,13 @@ public class AddListingActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (realm.isClosed())
+            realm = Realm.getDefaultInstance();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         realm.close();
@@ -211,7 +258,6 @@ public class AddListingActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
             if (result) {
                 imageAdapter.addImage(filepath + "/" + fileName);
-                newListing.setPhotos(imageAdapter.getImageList());
             } else {
                 Toast.makeText(AddListingActivity.this, "", Toast.LENGTH_SHORT).show();
             }

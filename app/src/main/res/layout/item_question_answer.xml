@@ -24,7 +24,7 @@
         android:layout_weight=".7"
         android:fontFamily="@string/font_family_light"
         android:hint="Answer"
-        android:inputType="text"
+        android:inputType="textCapWords"
         android:maxLines="1"
         android:textColor="@color/app_dark_100"
         android:textSize="12sp" />

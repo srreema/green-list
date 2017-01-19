@@ -2,6 +2,8 @@ package com.styx.mobile.greenlist.adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,14 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
 
     public QuestionnaireAdapter(ArrayList<String> arrayList) {
         this.arrayList = arrayList;
+        additionalParameters = new RealmList<>();
+        for (String question : arrayList) {
+            additionalParameters.add(new AdditionalParameter(question));
+        }
+    }
+
+    public RealmList<AdditionalParameter> getAdditionalParameters() {
+        return additionalParameters;
     }
 
     @Override
@@ -37,8 +47,25 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
     }
 
     @Override
-    public void onBindViewHolder(QuestionnaireAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final QuestionnaireAdapter.ViewHolder holder, final int position) {
         holder.textViewQuestion.setText(arrayList.get(position));
+        holder.textViewAnswer.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int position = holder.getAdapterPosition();
+                additionalParameters.get(position).setValue(s.toString());
+            }
+        });
     }
 
     @Override

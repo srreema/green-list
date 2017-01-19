@@ -22,15 +22,17 @@ public class GreenListApplication extends Application {
         initializeRealmStetho();
 
         boolean isFirstTime = Utils.isFirstTime(getApplicationContext());
-       // if (isFirstTime) {
+        // if (isFirstTime) {
         //}
     }
 
 
-
     private void initializeRealmStetho() {
-        Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration
+                .Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
         Stetho.initialize(

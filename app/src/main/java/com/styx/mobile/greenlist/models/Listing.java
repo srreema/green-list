@@ -1,5 +1,6 @@
 package com.styx.mobile.greenlist.models;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import io.realm.RealmList;
@@ -14,11 +15,28 @@ public class Listing extends RealmObject {
     private String category;
     private Type type;
     private RealmList<Photo> photos;
+    private Float minPrice, maxPrice;
     private Location location;
     private RealmList<AdditionalParameter> parameters;
 
     public Listing() {
 
+    }
+
+    public Float getMaxPrice() {
+        return maxPrice;
+    }
+
+    public Float getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMaxPrice(Float maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    public void setMinPrice(Float minPrice) {
+        this.minPrice = minPrice;
     }
 
     public String getTitle() {
@@ -71,4 +89,5 @@ public class Listing extends RealmObject {
     public void setParameters(RealmList<AdditionalParameter> parameters) {
         this.parameters = parameters;
     }
+
 }

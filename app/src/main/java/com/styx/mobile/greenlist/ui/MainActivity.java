@@ -29,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initButton();
         //initializeToolbar();
-        if (Utils.isFirstTime(MainActivity.this))
-            runDataBaseInit();
-
     }
 
     private void runDataBaseInit() {
@@ -46,14 +43,22 @@ public class MainActivity extends AppCompatActivity {
         realm.commitTransaction();
 
         realm.beginTransaction();
-
         Type typeFlat = realm.createObject(Type.class);
         typeFlat.setName("Flat");
-        typeFlat.getParameters().add(new Parameter("Color"));
-        typeFlat.getParameters().add(new Parameter("Model"));
-        typeFlat.getParameters().add(new Parameter("Wheels"));
+        typeFlat.getParameters().add(new Parameter("Rooms"));
+        typeFlat.getParameters().add(new Parameter("Kitchen"));
+        typeFlat.getParameters().add(new Parameter("Bath Attached"));
+        typeFlat.getParameters().add(new Parameter("Notice Period"));
         realm.commitTransaction();
 
+        realm.beginTransaction();
+        Type typeFurniture = realm.createObject(Type.class);
+        typeFurniture.setName("Furniture");
+        typeFurniture.getParameters().add(new Parameter("Chair/Table/Shelf"));
+        typeFurniture.getParameters().add(new Parameter("Material"));
+        typeFurniture.getParameters().add(new Parameter("Usage History"));
+        typeFurniture.getParameters().add(new Parameter("Color"));
+        realm.commitTransaction();
 
     }
 
@@ -77,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
                     handled = true;
                 }
                 return handled;
+            }
+        });
+        findViewById(R.id.event_categories_layout_1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runDataBaseInit();
             }
         });
     }

@@ -10,6 +10,10 @@ public class AdditionalParameter extends RealmObject {
     String key;
     String value;
 
+    public AdditionalParameter(String question) {
+        this.key = question;
+    }
+
     public AdditionalParameter() {
 
     }

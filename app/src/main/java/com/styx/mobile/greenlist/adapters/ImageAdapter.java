@@ -21,7 +21,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private ArrayList<String> imageList;
     private Context context;
     private OnImageViewClickListener onImageViewClickListener;
-    private final String LIST_EMPTY_IMAGE = "LIST_EMPTY";
+    public final static String LIST_EMPTY_IMAGE = "LIST_EMPTY";
 
     public ImageAdapter(Context context, OnImageViewClickListener onImageViewClickListener) {
         imageList = new ArrayList<>();
