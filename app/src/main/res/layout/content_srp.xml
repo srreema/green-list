@@ -18,7 +18,7 @@
             android:padding="24dp">
 
             <TextView
-                android:id="@+id/tv_location"
+                android:id="@+id/textViewTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@string/font_family_medium"
@@ -33,7 +33,7 @@
                 android:id="@+id/tv_label_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_location"
+                android:layout_below="@+id/textViewTitle"
                 android:fontFamily="@string/font_family_regular"
                 android:text="1200 hotels in this city"
                 android:textColor="#BCBDBC"

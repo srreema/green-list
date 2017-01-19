@@ -5,12 +5,17 @@ import java.util.ArrayList;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  *
  */
 
 public class Listing extends RealmObject {
+
+    @PrimaryKey
+    private long Id;
+
     private String title;
     private String category;
     private Type type;
@@ -21,6 +26,14 @@ public class Listing extends RealmObject {
 
     public Listing() {
 
+    }
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
     }
 
     public Float getMaxPrice() {

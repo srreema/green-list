@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
+import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.models.Type;
 import com.styx.mobile.greenlist.utils.Utils;
@@ -22,10 +23,12 @@ import com.styx.mobile.greenlist.utils.Utils;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
+    Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_main);
         initButton();
         //initializeToolbar();
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ListingDetailActivity.class);
-//                intent.putExtra()
+                intent.putExtra("Id", realm.where(Listing.class).max("Id").longValue());
                 Utils.startActivityWithClipReveal(intent, MainActivity.this, editTextSearch);
             }
         });
@@ -113,5 +116,18 @@ public class MainActivity extends AppCompatActivity {
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (realm.isClosed())
+            realm = Realm.getDefaultInstance();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        realm.close();
     }
 }

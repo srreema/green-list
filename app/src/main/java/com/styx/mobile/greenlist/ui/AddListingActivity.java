@@ -188,7 +188,11 @@ public class AddListingActivity extends AppCompatActivity {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realmInstance) {
-                Listing newListing = realmInstance.createObject(Listing.class);
+
+                Number currentMaxId = realmInstance.where(Listing.class).max("Id");
+                long newId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
+
+                Listing newListing = realmInstance.createObject(Listing.class,newId);
                 newListing.setTitle(title);
 
                 Location locationObject = realmInstance.createObject(Location.class);
@@ -297,7 +301,7 @@ public class AddListingActivity extends AppCompatActivity {
             if (result) {
                 imageAdapter.addImage(filepath + "/" + fileName);
             } else {
-                Toast.makeText(AddListingActivity.this, "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddListingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         }
 
