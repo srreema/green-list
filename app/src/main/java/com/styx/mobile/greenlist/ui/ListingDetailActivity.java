@@ -1,22 +1,21 @@
 package com.styx.mobile.greenlist.ui;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.EditText;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.styx.mobile.greenlist.R;
+import com.styx.mobile.greenlist.adapters.DataListAdapter;
+import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
+import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Photo;
+import com.styx.mobile.greenlist.utils.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,10 +31,8 @@ public class ListingDetailActivity extends AppCompatActivity {
     Long currentListingID;
     Listing thisListing;
 
-    TextView editTextListingName;
-    TextView textViewType;
-    TextView buttonCall;
-    TextView textViewTitle;
+    TextView textViewType, textViewTitle,textViewContactNumber;
+    RecyclerView recyclerViewDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +49,9 @@ public class ListingDetailActivity extends AppCompatActivity {
     private void initializeUI() {
         imageViewPager = (SimpleViewPager) findViewById(R.id.iv_hero_image);
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        editTextListingName = (TextView) findViewById(R.id.editTextListingName);
-        buttonCall = (TextView) findViewById(R.id.buttonCall);
         textViewType = (TextView) findViewById(R.id.textViewType);
+        textViewContactNumber = (TextView) findViewById(R.id.textViewContactNumber);
+        recyclerViewDataList = (RecyclerView) findViewById(R.id.recyclerViewDataList);
 
 
         ArrayList<String> photoList = new ArrayList<>();
@@ -73,10 +70,17 @@ public class ListingDetailActivity extends AppCompatActivity {
 
         textViewTitle.setText(thisListing.getTitle());
         textViewType.setText(thisListing.getType().getName());
-        editTextListingName.setText(thisListing.getLocation().getName());
+        textViewContactNumber.setText(thisListing.getContactNumber());
 
-        buttonCall.setText(thisListing.getContactNumber());
+        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
+        recyclerViewDataList.setLayoutManager(linearLayoutManagerQuestionnaire);
 
+        ArrayList<Pair<String>> arrayList = new ArrayList<>();
+        for (AdditionalParameter additionalParameter : thisListing.getParameters()) {
+            arrayList.add(new Pair<>(additionalParameter.getKey(), additionalParameter.getValue()));
+        }
+        DataListAdapter dataListAdapter = new DataListAdapter(arrayList);
+        recyclerViewDataList.setAdapter(dataListAdapter);
     }
 
     @Override

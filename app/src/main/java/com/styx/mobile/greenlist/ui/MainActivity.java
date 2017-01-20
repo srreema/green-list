@@ -93,12 +93,15 @@ public class MainActivity extends AppCompatActivity {
                 runDataBaseInit();
             }
         });
-
+        final Number data = realm.where(Listing.class).max("Id");
         findViewById(R.id.iv_category_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ListingDetailActivity.class);
-                intent.putExtra("Id", realm.where(Listing.class).max("Id").longValue());
+                if (data == null)
+                    intent.putExtra("Id", 0);
+                else
+                    intent.putExtra("Id", data.floatValue());
                 Utils.startActivityWithClipReveal(intent, MainActivity.this, editTextSearch);
             }
         });
