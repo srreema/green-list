@@ -29,7 +29,7 @@
             android:padding="12dp">
 
             <TextView
-                android:id="@+id/textViewTitle"
+                android:id="@+id/textViewSearchTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/linearLayoutPriceRange"
@@ -44,7 +44,7 @@
                 android:id="@+id/textViewType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewTitle"
+                android:layout_below="@+id/textViewSearchTitle"
                 android:fontFamily="@string/font_family_regular"
                 android:textColor="#BCBDBC"
                 android:textSize="14sp"

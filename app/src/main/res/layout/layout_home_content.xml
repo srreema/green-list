@@ -273,7 +273,7 @@
         android:layout_margin="16dp"
         android:backgroundTint="@color/app_red"
         android:clickable="true"
-        android:src="@drawable/ic_bullet_point"
+        android:src="@drawable/ic_note_add_white_24px"
         android:tint="@color/white"
         app:borderWidth="0dp"
         app:elevation="4dp" />

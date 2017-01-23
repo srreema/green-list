@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -18,7 +17,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.DataListAdapter;
-import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
 import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Photo;
@@ -54,7 +52,7 @@ public class ListingDetailActivity extends AppCompatActivity {
 
     private void initializeUI() {
         imageViewPager = (SimpleViewPager) findViewById(R.id.iv_hero_image);
-        textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+        textViewTitle = (TextView) findViewById(R.id.textViewSearchTitle);
         textViewType = (TextView) findViewById(R.id.textViewType);
         textViewContactNumber = (TextView) findViewById(R.id.textViewContactNumber);
         recyclerViewDataList = (RecyclerView) findViewById(R.id.recyclerViewDataList);

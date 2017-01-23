@@ -17,7 +17,6 @@ public class Listing extends RealmObject {
     private long Id;
 
     private String title;
-    private String category;
     private Type type;
     private String contactNumber;
     private RealmList<Photo> photos;
@@ -59,14 +58,6 @@ public class Listing extends RealmObject {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public Type getType() {

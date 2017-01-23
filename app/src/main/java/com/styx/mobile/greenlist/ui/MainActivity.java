@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 Utils.startActivityWithClipReveal(intent, MainActivity.this, fabAddListing);
             }
         });
+
         final EditText editTextSearch = (EditText) findViewById(R.id.editTextSearch);
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -81,12 +82,14 @@ public class MainActivity extends AppCompatActivity {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    intent.putExtra("searchParameter", editTextSearch.getText().toString());
                     Utils.startActivityWithClipReveal(intent, MainActivity.this, editTextSearch);
                     handled = true;
                 }
                 return handled;
             }
         });
+
         findViewById(R.id.event_categories_layout_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -2,47 +2,140 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.NestedScrollView
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="vertical">
 
-            <include layout="@layout/content_srp" />
-        </android.support.v4.widget.NestedScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true">
+                <include layout="@layout/item_search_bar" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingActionButtonFilter"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_margin="32dp"
-                android:backgroundTint="@color/app_red"
-                android:clickable="true"
-                android:src="@drawable/ic_filter_list_black_24dp"
-                android:tint="@color/white"
-                app:borderWidth="0dp"
-                app:elevation="4dp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:id="@+id/textViewSearchTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@string/font_family_medium"
+                        android:text="New Delhi"
+                        android:textAllCaps="true"
+                        android:textColor="@color/app_dark_200"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:transitionName="shared_title" />
+
+                    <TextView
+                        android:id="@+id/textViewResultsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewSearchTitle"
+                        android:fontFamily="@string/font_family_regular"
+                        android:text="1200 hotels in this city"
+                        android:textColor="#BCBDBC"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="96dp"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@color/medium_green_600" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:paddingTop="24dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@string/font_family_regular"
+                        android:text="Things to do"
+                        android:textAllCaps="true"
+                        android:textColor="@color/medium_green_900"
+                        android:textSize="13sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:fontFamily="@string/font_family_regular"
+                        android:text="More"
+                        android:textAllCaps="false"
+                        android:textColor="@color/medium_green_900"
+                        android:textSize="13sp"
+                        android:textStyle="normal" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_locations"
+                        android:layout_width="match_parent"
+                        android:layout_height="156dp"
+                        android:clipToPadding="false"
+                        android:paddingLeft="24dp" />
+                </LinearLayout>
+
+                <!--<include layout="@layout/item_select_date"/>-->
+
+                <View
+                    android:layout_width="96dp"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@color/medium_green_600"
+                    android:visibility="gone" />
+
+                <include layout="@layout/item_bank_min" />
+
+            </LinearLayout>
         </RelativeLayout>
-    </android.support.design.widget.CoordinatorLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonFilter"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="32dp"
+        android:backgroundTint="@color/app_red"
+        android:clickable="true"
+        android:src="@drawable/ic_filter_list_black_24dp"
+        android:tint="@color/white"
+        app:borderWidth="0dp"
+        app:elevation="4dp" />
 
     <include
         android:id="@+id/filters_layout"
         layout="@layout/layout_filters"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 </RelativeLayout>
