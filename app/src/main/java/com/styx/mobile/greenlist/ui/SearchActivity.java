@@ -3,42 +3,42 @@ package com.styx.mobile.greenlist.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.vision.text.Text;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ListingSearchAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.Listing;
+import com.styx.mobile.greenlist.utils.Pair;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import io.realm.Case;
-import io.realm.Realm;
-import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class SearchActivity extends BaseActivity {
     boolean isFilterVisible = false;
-    FloatingActionButton floatingActionButtonFilter;
+    FloatingActionButton floatingActionButtonFilterToggle;
     View filters_layout;
     EditText editTextSearch;
     RecyclerView recyclerViewListing;
 
     ListingSearchAdapter listingSearchAdapter;
-
+    ImageView imageViewBackButton;
     TextView textViewSearchTitle, textViewResultsCount;
 
     private String searchParameter;
+    private ArrayList<Pair<String>> pairFilters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,16 @@ public class SearchActivity extends BaseActivity {
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
         textViewSearchTitle = (TextView) findViewById(R.id.textViewSearchTitle);
         textViewResultsCount = (TextView) findViewById(R.id.textViewResultsCount);
+        imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
+        filters_layout = findViewById(R.id.filters_layout);
+        floatingActionButtonFilterToggle = (FloatingActionButton) findViewById(R.id.floatingActionButtonFilter);
+
+        imageViewBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFilterVisibility();
+            }
+        });
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -72,9 +82,7 @@ public class SearchActivity extends BaseActivity {
                 return handled;
             }
         });
-        filters_layout = findViewById(R.id.filters_layout);
-        floatingActionButtonFilter = (FloatingActionButton) findViewById(R.id.floatingActionButtonFilter);
-        floatingActionButtonFilter.setOnClickListener(new View.OnClickListener() {
+        floatingActionButtonFilterToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toggleFilterVisibility();
@@ -84,9 +92,12 @@ public class SearchActivity extends BaseActivity {
 
     private void doSearch() {
         searchParameter = (searchParameter == null ? "" : searchParameter);
+
+        RealmQuery<Listing> query = realm.where(Listing.class);
+
         RealmResults<Listing> realmResults = realm.where(Listing.class).contains("title", searchParameter, Case.INSENSITIVE).or().contains("type.name", searchParameter, Case.INSENSITIVE).findAll();
+
         editTextSearch.setText(searchParameter);
-        //editTextSearch.setSelection(searchParameter.length());
         textViewSearchTitle.setText(searchParameter);
         textViewResultsCount.setText(String.format(getString(R.string.search_result_count), realmResults.size()));
         listingSearchAdapter = new ListingSearchAdapter(SearchActivity.this, realmResults, true);
@@ -109,10 +120,21 @@ public class SearchActivity extends BaseActivity {
     private void toggleFilterVisibility() {
         if (isFilterVisible) {
             filters_layout.setVisibility(View.INVISIBLE);
+            floatingActionButtonFilterToggle.setVisibility(View.VISIBLE);
             isFilterVisible = false;
         } else {
             filters_layout.setVisibility(View.VISIBLE);
+            filters_layout.setVisibility(View.INVISIBLE);
             isFilterVisible = true;
         }
     }
+
+    /**
+     private String title;
+     private Type type;
+     private String contactNumber;
+     private RealmList<Photo> photos;
+     private Float minPrice, maxPrice;
+     private Location location;
+     */
 }

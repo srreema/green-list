@@ -1,8 +1,5 @@
 package com.styx.mobile.greenlist.models;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

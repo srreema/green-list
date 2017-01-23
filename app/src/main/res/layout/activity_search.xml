@@ -37,8 +37,7 @@
                         android:textAllCaps="true"
                         android:textColor="@color/app_dark_200"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:transitionName="shared_title" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textViewResultsCount"
