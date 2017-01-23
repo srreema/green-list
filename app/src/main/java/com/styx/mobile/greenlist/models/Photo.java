@@ -7,7 +7,7 @@ import io.realm.RealmObject;
  */
 
 public class Photo extends RealmObject {
-    String path;
+    private String path;
 
     public Photo() {
 

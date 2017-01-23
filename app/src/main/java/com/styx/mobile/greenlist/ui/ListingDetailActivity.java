@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.DataListAdapter;
+import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Photo;
@@ -29,8 +30,7 @@ import eu.fiskur.simpleviewpager.ImageURLLoader;
 import eu.fiskur.simpleviewpager.SimpleViewPager;
 import io.realm.Realm;
 
-public class ListingDetailActivity extends AppCompatActivity {
-    Realm realm;
+public class ListingDetailActivity extends BaseActivity {
 
     SimpleViewPager imageViewPager;
     Long currentListingID;
@@ -42,7 +42,6 @@ public class ListingDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        realm = Realm.getDefaultInstance();
 
         currentListingID = getIntent().getExtras().getLong("Id");
 
@@ -84,11 +83,7 @@ public class ListingDetailActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
         recyclerViewDataList.setLayoutManager(linearLayoutManagerQuestionnaire);
 
-        ArrayList<Pair<String>> arrayList = new ArrayList<>();
-        for (AdditionalParameter additionalParameter : thisListing.getParameters()) {
-            arrayList.add(new Pair<>(additionalParameter.getKey(), additionalParameter.getValue()));
-        }
-        DataListAdapter dataListAdapter = new DataListAdapter(arrayList);
+        DataListAdapter dataListAdapter = new DataListAdapter(ListingDetailActivity.this, thisListing.getParameters(), true);
         recyclerViewDataList.setAdapter(dataListAdapter);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -104,18 +99,5 @@ public class ListingDetailActivity extends AppCompatActivity {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 15.0f));
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (realm.isClosed())
-            realm = Realm.getDefaultInstance();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        realm.close();
     }
 }

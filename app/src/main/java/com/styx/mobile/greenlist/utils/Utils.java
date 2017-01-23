@@ -22,6 +22,8 @@ import java.util.UUID;
 
 public class Utils {
     public static final String CONST_IMAGE_DIRECTORY = "images";
+    public static final int REQUEST_PLACE_PICKER = 1000;
+    public static final int REQUEST_IMAGE_PICKER = 1001;
 
     public static void animationIn(final View view, final int animation, int delayTime, final Context context) {
         Handler handler = new Handler();

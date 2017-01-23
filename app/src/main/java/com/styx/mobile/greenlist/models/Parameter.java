@@ -8,7 +8,7 @@ import io.realm.RealmObject;
  */
 
 public class Parameter extends RealmObject {
-    public String name;
+    private String name;
     public Parameter(){}
 
     public Parameter(String name) {

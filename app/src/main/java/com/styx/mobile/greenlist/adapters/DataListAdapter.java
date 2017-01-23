@@ -1,5 +1,8 @@
 package com.styx.mobile.greenlist.adapters;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
@@ -10,17 +13,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
+import com.styx.mobile.greenlist.models.AdditionalParameter;
+import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.utils.Pair;
 
 import java.util.ArrayList;
 
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
-public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.ViewHolder> {
-    private ArrayList<Pair<String>> thisDataList;
 
-    public DataListAdapter(ArrayList<Pair<String>> dataList) {
-        thisDataList = dataList;
+public class DataListAdapter extends RealmRecyclerViewAdapter<AdditionalParameter, DataListAdapter.ViewHolder> {
 
+    public DataListAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<AdditionalParameter> data, boolean autoUpdate) {
+        super(context, data, autoUpdate);
     }
 
     @Override
@@ -31,14 +37,8 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final DataListAdapter.ViewHolder holder, final int position) {
-        holder.textViewQuestion.setText(thisDataList.get(position).getKey());
-        holder.textViewAnswer.setText(thisDataList.get(position).getValue());
-        holder.textViewAnswer.setEnabled(false);
-    }
-
-    @Override
-    public int getItemCount() {
-        return thisDataList.size();
+        holder.textViewQuestion.setText(getItem(position).getKey());
+        holder.textViewAnswer.setText(getItem(position).getValue());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,3 +51,5 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.ViewHo
         }
     }
 }
+
+

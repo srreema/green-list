@@ -28,6 +28,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ImageAdapter;
 import com.styx.mobile.greenlist.adapters.QuestionnaireAdapter;
+import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Location;
@@ -49,10 +50,9 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.internal.Util;
 
-public class AddListingActivity extends AppCompatActivity {
-    Realm realm;
-
+public class AddListingActivity extends BaseActivity {
     HashMap<String, String> locationData;
 
     ImageAdapter imageAdapter;
@@ -65,10 +65,8 @@ public class AddListingActivity extends AppCompatActivity {
     LinearLayout linearLayoutLocation;
     EditText editTextName, editTextMinPrice, editTextMaxPrice, editTextContactNumber;
 
-    final int REQUEST_CODE_PLACE_PICKER = 1000;
-    final int REQUEST_CODE_IMAGE_PICKER = 1001;
 
-    final String imagePrefix = "img_";
+    final String imagePrefix = "IMG_";
 
     PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -76,8 +74,6 @@ public class AddListingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addlisting);
-        realm = Realm.getDefaultInstance();
-
         initializeUI();
     }
 
@@ -101,7 +97,7 @@ public class AddListingActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_IMAGE_PICKER);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), Utils.REQUEST_IMAGE_PICKER);
             }
 
             @Override
@@ -123,7 +119,7 @@ public class AddListingActivity extends AppCompatActivity {
                 try {
                     /** Start Google Maps Place Picker Intent **/
                     Intent intent = builder.build(AddListingActivity.this);
-                    startActivityForResult(intent, REQUEST_CODE_PLACE_PICKER);
+                    startActivityForResult(intent, Utils.REQUEST_PLACE_PICKER);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -250,7 +246,7 @@ public class AddListingActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_CODE_PLACE_PICKER:
+            case Utils.REQUEST_PLACE_PICKER:
                 if (resultCode == RESULT_OK) {
                     Place place = PlacePicker.getPlace(this, data);
 
@@ -262,7 +258,7 @@ public class AddListingActivity extends AppCompatActivity {
                     textViewLocationName.setText(String.format(getString(R.string.location_name), place.getName()));
                 }
                 break;
-            case REQUEST_CODE_IMAGE_PICKER:
+            case Utils.REQUEST_IMAGE_PICKER:
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
                     try {
@@ -280,19 +276,6 @@ public class AddListingActivity extends AppCompatActivity {
         String fileName = imagePrefix + dateFormat.format(new Date()) + ".jpg";
         Log.d("GTA", "File Created " + fileName);
         new SaveImageAsync().execute(bitmap, fileName);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (realm.isClosed())
-            realm = Realm.getDefaultInstance();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        realm.close();
     }
 
     private class SaveImageAsync extends AsyncTask<Object, Void, Boolean> {
