@@ -113,7 +113,11 @@
                     android:background="@color/medium_green_600"
                     android:visibility="gone" />
 
-                <include layout="@layout/item_bank_min" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewListing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
 
             </LinearLayout>
         </RelativeLayout>

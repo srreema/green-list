@@ -2,6 +2,7 @@ package com.styx.mobile.greenlist.adapters;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +29,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         imageList.add(LIST_EMPTY_IMAGE);
         this.context = context;
         this.onImageViewClickListener = onImageViewClickListener;
+    }
+
+    public ImageAdapter(Context context, OnImageViewClickListener onImageViewClickListener, ArrayList<String> imageList) {
+        this.imageList = imageList;
+        this.context = context;
+        this.onImageViewClickListener = onImageViewClickListener;
+        notifyDataSetChanged();
     }
 
     public void addImage(String newImageLocation) {

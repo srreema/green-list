@@ -27,4 +27,8 @@
     <!--Home Screen-->
     <string name="what_to_search">What do you want to search  ?</string>
     <string name="location_name">Near %1$s</string>
+
+    <!--Search Screen-->
+    <string name="search_result_count">%1$d Search results found</string>
+
 </resources>
