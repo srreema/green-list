@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,9 +18,6 @@ import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ListingSearchAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.Listing;
-import com.styx.mobile.greenlist.utils.Pair;
-
-import java.util.ArrayList;
 
 import io.realm.Case;
 import io.realm.RealmQuery;
@@ -37,13 +34,22 @@ public class SearchActivity extends BaseActivity {
     ImageView imageViewBackButton;
     TextView textViewSearchTitle, textViewResultsCount;
 
-    private String searchParameter;
-    private ArrayList<Pair<String>> pairFilters;
+    //Search Parameters
+    private String searchParameterType;
+    private float searchParameterPrice;
+    private String searchParameterLocation;
+    private String searchParameterPrimaryKeyword;
+    public static final float PARAMETER_EMPTY = -1f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        searchParameter = getIntent().getStringExtra("searchParameter");
+
+        searchParameterPrimaryKeyword = getIntent().getStringExtra("searchParameterPrimaryKeyword");
+        searchParameterType = getIntent().getStringExtra("searchParameterType");
+        searchParameterLocation = getIntent().getStringExtra("searchParameterLocation");
+        searchParameterPrice = getIntent().getFloatExtra("searchParameterPrice", PARAMETER_EMPTY);
+
         setContentView(R.layout.activity_search);
         initializeUI();
         doSearch();
@@ -75,7 +81,7 @@ public class SearchActivity extends BaseActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchParameter = editTextSearch.getText().toString();
+                    searchParameterPrimaryKeyword = editTextSearch.getText().toString();
                     doSearch();
                     handled = true;
                 }
@@ -91,15 +97,27 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void doSearch() {
-        searchParameter = (searchParameter == null ? "" : searchParameter);
 
-        RealmQuery<Listing> query = realm.where(Listing.class);
+        RealmQuery<Listing> realmQuery = realm.where(Listing.class);
 
-        RealmResults<Listing> realmResults = realm.where(Listing.class).contains("title", searchParameter, Case.INSENSITIVE).or().contains("type.name", searchParameter, Case.INSENSITIVE).findAll();
+        //First search whether search query was present in any location name,type name or title
+        realmQuery.contains("title", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("type.name", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("location.name", searchParameterPrimaryKeyword, Case.INSENSITIVE);
+        //Default parametric filtering
+        if (!TextUtils.isEmpty(searchParameterType))
+            realmQuery.or().contains("type.name", searchParameterType, Case.INSENSITIVE);
+        if (!TextUtils.isEmpty(searchParameterLocation))
+            realmQuery.or().contains("location.name", searchParameterLocation, Case.INSENSITIVE);
+        if (searchParameterPrice != PARAMETER_EMPTY) {
+            realmQuery.or().greaterThanOrEqualTo("minPrice", searchParameterPrice);
+            realmQuery.or().lessThanOrEqualTo("maxPrice", searchParameterPrice);
+        }
+        RealmResults<Listing> realmResults = realmQuery.findAll();
 
-        editTextSearch.setText(searchParameter);
-        textViewSearchTitle.setText(searchParameter);
+        textViewSearchTitle.setText(searchParameterPrimaryKeyword);
+        editTextSearch.setText(searchParameterPrimaryKeyword);
+
         textViewResultsCount.setText(String.format(getString(R.string.search_result_count), realmResults.size()));
+
         listingSearchAdapter = new ListingSearchAdapter(SearchActivity.this, realmResults, true);
         recyclerViewListing.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewListing.setAdapter(listingSearchAdapter);
@@ -129,12 +147,4 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    /**
-     private String title;
-     private Type type;
-     private String contactNumber;
-     private RealmList<Photo> photos;
-     private Float minPrice, maxPrice;
-     private Location location;
-     */
 }

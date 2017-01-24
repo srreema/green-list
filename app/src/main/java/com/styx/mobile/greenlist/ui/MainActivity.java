@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                    intent.putExtra("searchParameter", editTextSearch.getText().toString());
+                    intent.putExtra("searchParameterPrimaryKeyword", editTextSearch.getText().toString());
                     editTextSearch.setText("");
                     Utils.startActivityWithClipReveal(intent, MainActivity.this, editTextSearch);
                     ((InputMethodManager) getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
