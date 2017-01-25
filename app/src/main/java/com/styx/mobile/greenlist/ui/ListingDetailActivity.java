@@ -2,7 +2,6 @@ package com.styx.mobile.greenlist.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
@@ -18,17 +17,14 @@ import com.squareup.picasso.Picasso;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.DataListAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
-import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Photo;
-import com.styx.mobile.greenlist.utils.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import eu.fiskur.simpleviewpager.ImageURLLoader;
 import eu.fiskur.simpleviewpager.SimpleViewPager;
-import io.realm.Realm;
 
 public class ListingDetailActivity extends BaseActivity {
 

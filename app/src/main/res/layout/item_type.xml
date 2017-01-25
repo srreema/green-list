@@ -1,31 +1,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayoutType"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
+    android:layout_height="84dp"
+    android:clickable="true"
+    android:gravity="center"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/iv_category_1"
+        android:id="@+id/imageViewIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_centerHorizontal="true"
         android:background="@drawable/shape_circle_ex_black"
         android:padding="16dp"
-        android:src="@drawable/ic_email_black_24dp"
+        android:src="@drawable/ic_local_library_black_24dp"
         android:tag="R.drawable.shape_circle_ex_black"
         android:tint="@color/text_black" />
 
     <TextView
-        android:id="@+id/textViewListingName"
+        android:id="@+id/textViewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@string/font_family_regular"
         android:gravity="center"
-        android:text="Category"
-        android:textColor="@color/text_black"
+        android:text="Automotives"
+        android:textColor="@color/white"
         android:textSize="10sp" />
 </LinearLayout>

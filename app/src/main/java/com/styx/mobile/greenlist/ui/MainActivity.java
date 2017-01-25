@@ -2,13 +2,10 @@ package com.styx.mobile.greenlist.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -17,56 +14,39 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
+import com.styx.mobile.greenlist.adapters.TypeAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
-import com.styx.mobile.greenlist.models.Listing;
-import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.models.Type;
 import com.styx.mobile.greenlist.utils.Utils;
 
-import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends BaseActivity {
+    RecyclerView recyclerViewTypeList;
+    EditText editTextSearch;
+    FloatingActionButton fabAddListing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initButton();
+        initializeUI();
     }
 
-    private void runDataBaseInit() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-
-        Type typeCar = realm.createObject(Type.class);
-        typeCar.setName("Car");
-        typeCar.getParameters().add(new Parameter("Brand"));
-        typeCar.getParameters().add(new Parameter("Year Purchased"));
-        typeCar.getParameters().add(new Parameter("Color"));
-        realm.commitTransaction();
-
-        realm.beginTransaction();
-        Type typeFlat = realm.createObject(Type.class);
-        typeFlat.setName("Flat");
-        typeFlat.getParameters().add(new Parameter("Rooms"));
-        typeFlat.getParameters().add(new Parameter("Kitchen"));
-        typeFlat.getParameters().add(new Parameter("Bath Attached"));
-        typeFlat.getParameters().add(new Parameter("Notice Period"));
-        realm.commitTransaction();
-
-        realm.beginTransaction();
-        Type typeFurniture = realm.createObject(Type.class);
-        typeFurniture.setName("Furniture");
-        typeFurniture.getParameters().add(new Parameter("Chair/Table/Shelf"));
-        typeFurniture.getParameters().add(new Parameter("Material"));
-        typeFurniture.getParameters().add(new Parameter("Usage History"));
-        typeFurniture.getParameters().add(new Parameter("Color"));
-        realm.commitTransaction();
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
+        TypeAdapter typeAdapter = new TypeAdapter(MainActivity.this, typeRealmResults, true);
+        recyclerViewTypeList.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));
+        recyclerViewTypeList.setAdapter(typeAdapter);
     }
 
-    private void initButton() {
-        final FloatingActionButton fabAddListing = (FloatingActionButton) findViewById(R.id.fabAddListing);
+    private void initializeUI() {
+        //TODO fabAddLisitn and edittextsearch may need to be declared final check if error
+        fabAddListing = (FloatingActionButton) findViewById(R.id.fabAddListing);
+        recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
+
         fabAddListing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +55,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        final EditText editTextSearch = (EditText) findViewById(R.id.editTextSearch);
+        editTextSearch = (EditText) findViewById(R.id.editTextSearch);
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -91,25 +71,5 @@ public class MainActivity extends BaseActivity {
                 return handled;
             }
         });
-
-        findViewById(R.id.event_categories_layout_1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                runDataBaseInit();
-            }
-        });
-        final Number data = realm.where(Listing.class).max("Id");
-        findViewById(R.id.iv_category_2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListingDetailActivity.class);
-                if (data == null)
-                    intent.putExtra("Id", 0);
-                else
-                    intent.putExtra("Id", data.floatValue());
-                Utils.startActivityWithClipReveal(intent, MainActivity.this, editTextSearch);
-            }
-        });
     }
-
 }

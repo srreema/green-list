@@ -4,11 +4,11 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
- * Created by amalg on 16-01-2017.
  */
 
 public class Type extends RealmObject {
     private String name;
+    private String icon;
     public RealmList<Parameter> parameters;
 
     public Type(String name, RealmList<Parameter> parameters) {
@@ -29,6 +29,14 @@ public class Type extends RealmObject {
 
     public RealmList<Parameter> getParameters() {
         return parameters;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public void setParameters(RealmList<Parameter> parameters) {

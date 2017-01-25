@@ -32,7 +32,7 @@ public class SearchActivity extends BaseActivity {
 
     ListingSearchAdapter listingSearchAdapter;
     ImageView imageViewBackButton;
-    TextView textViewSearchTitle, textViewResultsCount;
+    TextView textViewSearchTitle, textViewResultsCount, textViewSearchParameters;
 
     //Search Parameters
     private String searchParameterType;
@@ -66,6 +66,7 @@ public class SearchActivity extends BaseActivity {
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
         textViewSearchTitle = (TextView) findViewById(R.id.textViewSearchTitle);
         textViewResultsCount = (TextView) findViewById(R.id.textViewResultsCount);
+        textViewSearchParameters = (TextView) findViewById(R.id.textViewSearchParameters);
         imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
         filters_layout = findViewById(R.id.filters_layout);
         floatingActionButtonFilterToggle = (FloatingActionButton) findViewById(R.id.floatingActionButtonFilter);
@@ -99,21 +100,29 @@ public class SearchActivity extends BaseActivity {
     private void doSearch() {
 
         RealmQuery<Listing> realmQuery = realm.where(Listing.class);
-
         //First search whether search query was present in any location name,type name or title
-        realmQuery.contains("title", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("type.name", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("location.name", searchParameterPrimaryKeyword, Case.INSENSITIVE);
+        if (!TextUtils.isEmpty(searchParameterPrimaryKeyword))
+            realmQuery.contains("title", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("type.name", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("location.name", searchParameterPrimaryKeyword, Case.INSENSITIVE);
         //Default parametric filtering
-        if (!TextUtils.isEmpty(searchParameterType))
+        String searchParameters = "";
+        if (!TextUtils.isEmpty(searchParameterType)) {
             realmQuery.or().contains("type.name", searchParameterType, Case.INSENSITIVE);
-        if (!TextUtils.isEmpty(searchParameterLocation))
+            searchParameters += ("type: " + searchParameterType);
+        }
+        if (!TextUtils.isEmpty(searchParameterLocation)) {
             realmQuery.or().contains("location.name", searchParameterLocation, Case.INSENSITIVE);
+            searchParameters += ("near: " + searchParameterLocation);
+        }
         if (searchParameterPrice != PARAMETER_EMPTY) {
             realmQuery.or().greaterThanOrEqualTo("minPrice", searchParameterPrice);
             realmQuery.or().lessThanOrEqualTo("maxPrice", searchParameterPrice);
+            searchParameters += ("price: " + searchParameterPrice);
+
         }
         RealmResults<Listing> realmResults = realmQuery.findAll();
 
         textViewSearchTitle.setText(searchParameterPrimaryKeyword);
+        textViewSearchParameters.setText(searchParameters);
         editTextSearch.setText(searchParameterPrimaryKeyword);
 
         textViewResultsCount.setText(String.format(getString(R.string.search_result_count), realmResults.size()));
@@ -142,7 +151,7 @@ public class SearchActivity extends BaseActivity {
             isFilterVisible = false;
         } else {
             filters_layout.setVisibility(View.VISIBLE);
-            filters_layout.setVisibility(View.INVISIBLE);
+            floatingActionButtonFilterToggle.setVisibility(View.INVISIBLE);
             isFilterVisible = true;
         }
     }
