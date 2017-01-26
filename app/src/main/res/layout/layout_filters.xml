@@ -3,7 +3,7 @@
     android:id="@+id/reveal_items"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/black_100"
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -156,12 +156,11 @@
                     android:textColor="@color/text_black"
                     android:textSize="12sp" />
 
-                <include
-                    layout="@layout/filters_categories"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewTypeList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp" />
-
 
                 <View
                     android:layout_width="match_parent"
@@ -180,157 +179,38 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/font_family_light"
                         android:gravity="center"
-                        android:text="Dates"
+                        android:text="Price"
                         android:textColor="@color/text_black"
                         android:textSize="12sp" />
 
 
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
-                        android:layout_height="84dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:id="@+id/event_categories_layout_1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:background="#ffffff"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/iv_category_1"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:layout_centerHorizontal="true"
-                                android:background="@drawable/shape_circle_ex_black"
-                                android:padding="16dp"
-                                android:src="@drawable/ic_email_black_24dp"
-                                android:tag="R.drawable.shape_circle_ex_black"
-                                android:tint="@color/text_black" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginRight="8dp"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@string/font_family_regular"
-                                android:gravity="center"
-                                android:text="Today"
-                                android:textColor="@color/text_black"
-                                android:textSize="10sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/event_categories_layout_2"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:background="#ffffff"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/iv_category_2"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:layout_centerHorizontal="true"
-                                android:background="@drawable/shape_circle_ex_black"
-                                android:padding="16dp"
-                                android:src="@drawable/ic_email_black_24dp"
-                                android:tint="@color/text_black" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginRight="8dp"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@string/font_family_regular"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="Tomorrow"
-                                android:textColor="@color/text_black"
-                                android:textSize="10sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/event_categories_layout_7"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:background="#ffffff"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/iv_category_7"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:layout_centerHorizontal="true"
-                                android:background="@drawable/shape_circle_ex_black"
-                                android:padding="16dp"
-                                android:src="@drawable/ic_email_black_24dp"
-                                android:tint="@color/text_black" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginRight="8dp"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@string/font_family_regular"
-                                android:gravity="center"
-                                android:text="This weekend"
-                                android:textColor="@color/text_black"
-                                android:textSize="10sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/event_categories_layout_3"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:background="#ffffff"
-                            android:clickable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/iv_category_3"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:layout_centerHorizontal="true"
-                                android:background="@drawable/shape_circle_ex_black"
-                                android:padding="16dp"
-                                android:src="@drawable/ic_email_black_24dp"
-                                android:tint="@color/text_black" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginRight="8dp"
-                                android:layout_marginTop="8dp"
-                                android:fontFamily="@string/font_family_regular"
-                                android:gravity="center"
-                                android:text="Select dates"
-                                android:textColor="@color/farmr_teal_500"
-                                android:textSize="10sp" />
-                        </LinearLayout>
+                        <EditText
+                            android:id="@+id/editTextSearchPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:hint="2000"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:padding="16dp"
+                            android:textColor="@color/app_dark_100"
+                            android:textColorHint="@color/medium_green_800"
+                            android:textCursorDrawable="@color/app_dark_100"
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.7dp"
+                    android:background="@color/grey_300" />
 
                 <View
                     android:layout_width="match_parent"

@@ -38,12 +38,20 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
         TypeAdapter typeAdapter = new TypeAdapter(MainActivity.this, typeRealmResults, true);
+        typeAdapter.setOnItemClickListener(new TypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Type type) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.putExtra("searchParameterType", type.getName());
+                startActivity(intent);
+            }
+        });
         recyclerViewTypeList.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));
         recyclerViewTypeList.setAdapter(typeAdapter);
     }
 
     private void initializeUI() {
-        //TODO fabAddLisitn and edittextsearch may need to be declared final check if error
+        //TODO fabAddListing and edittextsearch may need to be declared final check if error
         fabAddListing = (FloatingActionButton) findViewById(R.id.fabAddListing);
         recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
 

@@ -28,9 +28,40 @@ public class GreenListApplication extends Application {
 
 
     private void initializeRealmStetho() {
+        Realm.Transaction initialData = new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Type typeCar = realm.createObject(Type.class);
+                typeCar.setName("Car");
+                typeCar.getParameters().add(new Parameter("Brand"));
+                typeCar.getParameters().add(new Parameter("Year Purchased"));
+                typeCar.getParameters().add(new Parameter("Color"));
+                realm.commitTransaction();
+
+                realm.beginTransaction();
+                Type typeFlat = realm.createObject(Type.class);
+                typeFlat.setName("Flat");
+                typeFlat.getParameters().add(new Parameter("Rooms"));
+                typeFlat.getParameters().add(new Parameter("Kitchen"));
+                typeFlat.getParameters().add(new Parameter("Bath Attached"));
+                typeFlat.getParameters().add(new Parameter("Notice Period"));
+                realm.commitTransaction();
+
+                realm.beginTransaction();
+                Type typeFurniture = realm.createObject(Type.class);
+                typeFurniture.setName("Furniture");
+                typeFurniture.getParameters().add(new Parameter("Chair/Table/Shelf"));
+                typeFurniture.getParameters().add(new Parameter("Material"));
+                typeFurniture.getParameters().add(new Parameter("Usage History"));
+                typeFurniture.getParameters().add(new Parameter("Color"));
+            }
+        };
+
+
         Realm.init(getApplicationContext());
         RealmConfiguration realmConfiguration = new RealmConfiguration
                 .Builder()
+                .initialData(initialData)
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);

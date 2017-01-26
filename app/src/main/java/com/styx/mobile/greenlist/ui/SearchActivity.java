@@ -1,8 +1,10 @@
 package com.styx.mobile.greenlist.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,8 +18,10 @@ import android.widget.TextView;
 
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ListingSearchAdapter;
+import com.styx.mobile.greenlist.adapters.TypeAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.Listing;
+import com.styx.mobile.greenlist.models.Type;
 
 import io.realm.Case;
 import io.realm.RealmQuery;
@@ -28,7 +32,7 @@ public class SearchActivity extends BaseActivity {
     FloatingActionButton floatingActionButtonFilterToggle;
     View filters_layout;
     EditText editTextSearch;
-    RecyclerView recyclerViewListing;
+    RecyclerView recyclerViewListing, recyclerViewTypeList;
 
     ListingSearchAdapter listingSearchAdapter;
     ImageView imageViewBackButton;
@@ -63,12 +67,13 @@ public class SearchActivity extends BaseActivity {
 
     private void initializeUI() {
         recyclerViewListing = (RecyclerView) findViewById(R.id.recyclerViewListing);
+        recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
         textViewSearchTitle = (TextView) findViewById(R.id.textViewSearchTitle);
         textViewResultsCount = (TextView) findViewById(R.id.textViewResultsCount);
         textViewSearchParameters = (TextView) findViewById(R.id.textViewSearchParameters);
         imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
-        filters_layout = findViewById(R.id.filters_layout);
+        filters_layout = findViewById(R.id.layoutFilters);
         floatingActionButtonFilterToggle = (FloatingActionButton) findViewById(R.id.floatingActionButtonFilter);
 
         imageViewBackButton.setOnClickListener(new View.OnClickListener() {
@@ -95,29 +100,57 @@ public class SearchActivity extends BaseActivity {
                 toggleFilterVisibility();
             }
         });
+
+        RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
+        TypeAdapter typeAdapter = new TypeAdapter(SearchActivity.this, typeRealmResults, true);
+        typeAdapter.setOnItemClickListener(new TypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Type type) {
+                Intent intent = new Intent(SearchActivity.this, SearchActivity.class);
+                intent.putExtra("searchParameterType", searchParameterType);
+                startActivity(intent);
+            }
+        });
+        recyclerViewTypeList.setLayoutManager(new GridLayoutManager(SearchActivity.this, 3));
+        recyclerViewTypeList.setAdapter(typeAdapter);
     }
 
     private void doSearch() {
 
         RealmQuery<Listing> realmQuery = realm.where(Listing.class);
+        boolean hasSearchQuery = false;
         //First search whether search query was present in any location name,type name or title
-        if (!TextUtils.isEmpty(searchParameterPrimaryKeyword))
+        if (!TextUtils.isEmpty(searchParameterPrimaryKeyword)) {
+            hasSearchQuery = true;
             realmQuery.contains("title", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("type.name", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("location.name", searchParameterPrimaryKeyword, Case.INSENSITIVE);
-        //Default parametric filtering
+        }
         String searchParameters = "";
         if (!TextUtils.isEmpty(searchParameterType)) {
-            realmQuery.or().contains("type.name", searchParameterType, Case.INSENSITIVE);
+            if (hasSearchQuery) {
+                realmQuery.or().contains("type.name", searchParameterType, Case.INSENSITIVE);
+            } else {
+                realmQuery.contains("type.name", searchParameterType, Case.INSENSITIVE);
+            }
+            hasSearchQuery = true;
             searchParameters += ("type: " + searchParameterType);
         }
         if (!TextUtils.isEmpty(searchParameterLocation)) {
-            realmQuery.or().contains("location.name", searchParameterLocation, Case.INSENSITIVE);
+            if (hasSearchQuery) {
+                realmQuery.or().contains("location.name", searchParameterLocation, Case.INSENSITIVE);
+            } else {
+                realmQuery.contains("location.name", searchParameterLocation, Case.INSENSITIVE);
+            }
+            hasSearchQuery = true;
             searchParameters += ("near: " + searchParameterLocation);
         }
         if (searchParameterPrice != PARAMETER_EMPTY) {
-            realmQuery.or().greaterThanOrEqualTo("minPrice", searchParameterPrice);
+            if (hasSearchQuery) {
+                realmQuery.or().greaterThanOrEqualTo("minPrice", searchParameterPrice);
+            } else {
+                realmQuery.greaterThanOrEqualTo("minPrice", searchParameterPrice);
+            }
             realmQuery.or().lessThanOrEqualTo("maxPrice", searchParameterPrice);
             searchParameters += ("price: " + searchParameterPrice);
-
         }
         RealmResults<Listing> realmResults = realmQuery.findAll();
 

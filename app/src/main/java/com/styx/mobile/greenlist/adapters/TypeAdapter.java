@@ -1,8 +1,6 @@
 package com.styx.mobile.greenlist.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -15,19 +13,25 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.styx.mobile.greenlist.R;
-import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.models.Type;
-import com.styx.mobile.greenlist.ui.SearchActivity;
 
 import io.realm.OrderedRealmCollection;
-import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 
 
 public class TypeAdapter extends RealmRecyclerViewAdapter<Type, TypeAdapter.ViewHolder> {
+    OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(Type type);
+    }
 
     public TypeAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Type> data, boolean autoUpdate) {
         super(context, data, autoUpdate);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -40,15 +44,15 @@ public class TypeAdapter extends RealmRecyclerViewAdapter<Type, TypeAdapter.View
     public void onBindViewHolder(final TypeAdapter.ViewHolder holder, int position) {
         holder.textViewName.setText(getItem(position).getName());
         Picasso.with(context).load(getItem(position).getIcon()).into(holder.imageViewIcon);
-        final String searchParameterType = getItem(position).getName();
-        holder.linearLayoutType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, SearchActivity.class);
-                intent.putExtra("searchParameterType", searchParameterType);
-                context.startActivity(intent);
-            }
-        });
+        final Type type = getItem(position);
+        if (onItemClickListener != null) {
+            holder.linearLayoutType.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(type);
+                }
+            });
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

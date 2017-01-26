@@ -145,7 +145,7 @@
         app:elevation="4dp" />
 
     <include
-        android:id="@+id/filters_layout"
+        android:id="@+id/layoutFilters"
         layout="@layout/layout_filters"
         android:visibility="gone" />
 </RelativeLayout>

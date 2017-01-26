@@ -30,5 +30,6 @@
 
     <!--Search Screen-->
     <string name="search_result_count">%1$d Search results found</string>
+    <string name="search_location_hint">near</string>
 
 </resources>

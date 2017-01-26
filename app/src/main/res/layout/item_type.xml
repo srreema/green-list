@@ -26,6 +26,6 @@
         android:fontFamily="@string/font_family_regular"
         android:gravity="center"
         android:text="Automotives"
-        android:textColor="@color/white"
+        android:textColor="@color/black_200"
         android:textSize="10sp" />
 </LinearLayout>
