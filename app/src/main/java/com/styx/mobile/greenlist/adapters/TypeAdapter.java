@@ -30,6 +30,7 @@ public class TypeAdapter extends RealmRecyclerViewAdapter<Type, TypeAdapter.View
         super(context, data, autoUpdate);
     }
 
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
@@ -55,10 +56,10 @@ public class TypeAdapter extends RealmRecyclerViewAdapter<Type, TypeAdapter.View
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewIcon;
-        TextView textViewName;
-        LinearLayout linearLayoutType;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView imageViewIcon;
+        private TextView textViewName;
+        private LinearLayout linearLayoutType;
 
         ViewHolder(View itemView) {
             super(itemView);

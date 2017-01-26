@@ -106,9 +106,6 @@ public class SearchActivity extends BaseActivity {
         typeAdapter.setOnItemClickListener(new TypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Type type) {
-                Intent intent = new Intent(SearchActivity.this, SearchActivity.class);
-                intent.putExtra("searchParameterType", searchParameterType);
-                startActivity(intent);
             }
         });
         recyclerViewTypeList.setLayoutManager(new GridLayoutManager(SearchActivity.this, 3));
