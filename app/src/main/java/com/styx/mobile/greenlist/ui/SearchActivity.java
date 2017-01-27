@@ -7,7 +7,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,7 +23,10 @@ import com.styx.mobile.greenlist.adapters.ListingSearchAdapter;
 import com.styx.mobile.greenlist.adapters.TypeAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.Listing;
+import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.models.Type;
+
+import java.util.ArrayList;
 
 import io.realm.Case;
 import io.realm.RealmQuery;
@@ -31,15 +36,15 @@ public class SearchActivity extends BaseActivity {
     boolean isFilterVisible = false;
     FloatingActionButton floatingActionButtonFilterToggle;
     View filters_layout;
-    EditText editTextSearch;
+    EditText editTextSearch, editTextSearchPrice, editTextLocation;
     RecyclerView recyclerViewListing, recyclerViewTypeList;
 
     ListingSearchAdapter listingSearchAdapter;
     ImageView imageViewBackButton;
-    TextView textViewSearchTitle, textViewResultsCount, textViewSearchParameters;
+    TextView textViewSearchTitle, textViewResultsCount, textViewSearchParameters, textViewFiltersText, textViewFilterResetButton;
 
     //Search Parameters
-    private String searchParameterType;
+    private ArrayList<String> searchParameterType;
     private float searchParameterPrice;
     private String searchParameterLocation;
     private String searchParameterPrimaryKeyword;
@@ -48,33 +53,41 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        searchParameterPrimaryKeyword = getIntent().getStringExtra("searchParameterPrimaryKeyword");
-        searchParameterType = getIntent().getStringExtra("searchParameterType");
-        searchParameterLocation = getIntent().getStringExtra("searchParameterLocation");
-        searchParameterPrice = getIntent().getFloatExtra("searchParameterPrice", PARAMETER_EMPTY);
-
         setContentView(R.layout.activity_search);
+        getArguments();
         initializeUI();
         doSearch();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        doSearch();
+    void getArguments() {
+        searchParameterType = new ArrayList<>();
+        if (getIntent().getStringExtra("searchParameterType") != null)
+            searchParameterType.add(getIntent().getStringExtra("searchParameterType"));
+        searchParameterPrimaryKeyword = getIntent().getStringExtra("searchParameterPrimaryKeyword");
+        searchParameterLocation = getIntent().getStringExtra("searchParameterLocation");
+        searchParameterPrice = getIntent().getFloatExtra("searchParameterPrice", PARAMETER_EMPTY);
     }
 
+
     private void initializeUI() {
+        floatingActionButtonFilterToggle = (FloatingActionButton) findViewById(R.id.floatingActionButtonFilter);
+
         recyclerViewListing = (RecyclerView) findViewById(R.id.recyclerViewListing);
         recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
+
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
+        editTextSearchPrice = (EditText) findViewById(R.id.editTextSearchPrice);
+        editTextLocation = (EditText) findViewById(R.id.editTextLocation);
+
         textViewSearchTitle = (TextView) findViewById(R.id.textViewSearchTitle);
+        textViewFilterResetButton = (TextView) findViewById(R.id.textViewFilterResetButton);
         textViewResultsCount = (TextView) findViewById(R.id.textViewResultsCount);
+        textViewFiltersText = (TextView) findViewById(R.id.textViewFiltersText);
         textViewSearchParameters = (TextView) findViewById(R.id.textViewSearchParameters);
+
         imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
+
         filters_layout = findViewById(R.id.layoutFilters);
-        floatingActionButtonFilterToggle = (FloatingActionButton) findViewById(R.id.floatingActionButtonFilter);
 
         imageViewBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,77 +95,179 @@ public class SearchActivity extends BaseActivity {
                 toggleFilterVisibility();
             }
         });
-        editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchParameterPrimaryKeyword = editTextSearch.getText().toString();
-                    doSearch();
-                    handled = true;
-                }
-                return handled;
-            }
-        });
-        floatingActionButtonFilterToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleFilterVisibility();
-            }
-        });
+        editTextLocation.addTextChangedListener(new TextWatcher() {
+                                                    @Override
+                                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                                        if (TextUtils.isEmpty(charSequence)) {
+                                                            searchParameterLocation = "";
+                                                        } else {
+                                                            searchParameterLocation = charSequence.toString();
+                                                        }
+                                                        updateFilters();
+                                                    }
+
+                                                    @Override
+                                                    public void afterTextChanged(Editable editable) {
+
+                                                    }
+                                                }
+
+        );
+        editTextSearchPrice.addTextChangedListener(new
+
+                                                           TextWatcher() {
+                                                               @Override
+                                                               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                                               }
+
+                                                               @Override
+                                                               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                                                   if (TextUtils.isEmpty(charSequence)) {
+                                                                       searchParameterPrice = PARAMETER_EMPTY;
+                                                                   } else {
+                                                                       searchParameterPrice = Float.parseFloat(charSequence.toString());
+                                                                   }
+                                                                   updateFilters();
+                                                               }
+
+                                                               @Override
+                                                               public void afterTextChanged(Editable editable) {
+
+                                                               }
+                                                           }
+
+        );
+        editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
+
+                                                 {
+                                                     @Override
+                                                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                                         boolean handled = false;
+                                                         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                                                             searchParameterPrimaryKeyword = editTextSearch.getText().toString();
+                                                             doSearch();
+                                                             handled = true;
+                                                         }
+                                                         return handled;
+                                                     }
+                                                 }
+
+        );
+        textViewFilterResetButton.setOnClickListener(new View.OnClickListener()
+
+                                                     {
+                                                         @Override
+                                                         public void onClick(View view) {
+                                                             searchParameterLocation = searchParameterPrimaryKeyword = "";
+                                                             searchParameterPrice = PARAMETER_EMPTY;
+                                                             searchParameterType = new ArrayList<>();
+                                                             updateFilters();
+                                                         }
+                                                     }
+
+        );
+        floatingActionButtonFilterToggle.setOnClickListener(new View.OnClickListener()
+
+                                                            {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    if (isFilterVisible) {
+                                                                        doSearch();
+                                                                    }
+                                                                    toggleFilterVisibility();
+                                                                }
+                                                            }
+
+        );
 
         RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
         TypeAdapter typeAdapter = new TypeAdapter(SearchActivity.this, typeRealmResults, true);
-        typeAdapter.setOnItemClickListener(new TypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Type type) {
-            }
-        });
-        recyclerViewTypeList.setLayoutManager(new GridLayoutManager(SearchActivity.this, 3));
+        typeAdapter.setOnItemClickListener(new TypeAdapter.OnItemClickListener()
+
+                                           {
+                                               @Override
+                                               public void onItemClick(Type type) {
+                                                   if (searchParameterType.contains(type.getName())) {
+                                                       searchParameterType.remove(type.getName());
+                                                   } else {
+                                                       searchParameterType.add(type.getName());
+                                                   }
+                                                   updateFilters();
+                                               }
+                                           }
+
+        );
+
+        recyclerViewTypeList.setLayoutManager(new
+
+                GridLayoutManager(SearchActivity.this, 3)
+
+        );
         recyclerViewTypeList.setAdapter(typeAdapter);
+        updateFilters();
+    }
+
+    private String getFilterText() {
+        String filterText = "";
+        if (!searchParameterType.isEmpty()) {
+            filterText += "Type : " + searchParameterType.toString() + " ";
+        }
+        if (!TextUtils.isEmpty(searchParameterLocation)) {
+            if (!filterText.isEmpty()) {
+                filterText += " , ";
+            }
+            filterText += ("Location near: " + searchParameterLocation + " ");
+        }
+        if (searchParameterPrice != PARAMETER_EMPTY) {
+            if (!filterText.isEmpty()) {
+                filterText += " , ";
+            }
+            filterText += ("Price : " + searchParameterPrice + " ");
+        }
+        if (filterText.isEmpty()) {
+            filterText = "No Filters";
+        }
+        return filterText;
+    }
+
+    private void updateFilters() {
+        textViewFiltersText.setText(getFilterText());
     }
 
     private void doSearch() {
 
         RealmQuery<Listing> realmQuery = realm.where(Listing.class);
-        boolean hasSearchQuery = false;
         //First search whether search query was present in any location name,type name or title
         if (!TextUtils.isEmpty(searchParameterPrimaryKeyword)) {
-            hasSearchQuery = true;
             realmQuery.contains("title", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("type.name", searchParameterPrimaryKeyword, Case.INSENSITIVE).or().contains("location.name", searchParameterPrimaryKeyword, Case.INSENSITIVE);
         }
-        String searchParameters = "";
-        if (!TextUtils.isEmpty(searchParameterType)) {
-            if (hasSearchQuery) {
-                realmQuery.or().contains("type.name", searchParameterType, Case.INSENSITIVE);
-            } else {
-                realmQuery.contains("type.name", searchParameterType, Case.INSENSITIVE);
+        if (!searchParameterType.isEmpty())
+            for (int index = 0; index < searchParameterType.size(); index++) {
+                if (index == 0) {
+                    realmQuery.contains("type.name", searchParameterType.get(index), Case.INSENSITIVE);
+                } else {
+                    realmQuery.or().contains("type.name", searchParameterType.get(index), Case.INSENSITIVE);
+                }
+                if (index != searchParameterType.size() - 1) {
+                }
             }
-            hasSearchQuery = true;
-            searchParameters += ("type: " + searchParameterType);
-        }
         if (!TextUtils.isEmpty(searchParameterLocation)) {
-            if (hasSearchQuery) {
-                realmQuery.or().contains("location.name", searchParameterLocation, Case.INSENSITIVE);
-            } else {
-                realmQuery.contains("location.name", searchParameterLocation, Case.INSENSITIVE);
-            }
-            hasSearchQuery = true;
-            searchParameters += ("near: " + searchParameterLocation);
+            realmQuery.contains("location.name", searchParameterLocation, Case.INSENSITIVE);
         }
         if (searchParameterPrice != PARAMETER_EMPTY) {
-            if (hasSearchQuery) {
-                realmQuery.or().greaterThanOrEqualTo("minPrice", searchParameterPrice);
-            } else {
-                realmQuery.greaterThanOrEqualTo("minPrice", searchParameterPrice);
-            }
-            realmQuery.or().lessThanOrEqualTo("maxPrice", searchParameterPrice);
-            searchParameters += ("price: " + searchParameterPrice);
+            realmQuery.lessThanOrEqualTo("minPrice", searchParameterPrice);
+            realmQuery.greaterThanOrEqualTo("maxPrice", searchParameterPrice);
         }
         RealmResults<Listing> realmResults = realmQuery.findAll();
 
         textViewSearchTitle.setText(searchParameterPrimaryKeyword);
-        textViewSearchParameters.setText(searchParameters);
+        textViewSearchParameters.setText(getFilterText());
         editTextSearch.setText(searchParameterPrimaryKeyword);
 
         textViewResultsCount.setText(String.format(getString(R.string.search_result_count), realmResults.size()));
@@ -165,6 +280,24 @@ public class SearchActivity extends BaseActivity {
         ((InputMethodManager) getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
     }
 
+    private void toggleFilterVisibility() {
+        if (isFilterVisible) {
+            filters_layout.setVisibility(View.INVISIBLE);
+            floatingActionButtonFilterToggle.setImageResource(R.drawable.ic_filter_list_black_24dp);
+            isFilterVisible = false;
+        } else {
+            filters_layout.setVisibility(View.VISIBLE);
+            floatingActionButtonFilterToggle.setImageResource(R.drawable.ic_search_black_24dp);
+            isFilterVisible = true;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doSearch();
+    }
+
     @Override
     public void onBackPressed() {
         if (isFilterVisible) {
@@ -174,16 +307,5 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    private void toggleFilterVisibility() {
-        if (isFilterVisible) {
-            filters_layout.setVisibility(View.INVISIBLE);
-            floatingActionButtonFilterToggle.setVisibility(View.VISIBLE);
-            isFilterVisible = false;
-        } else {
-            filters_layout.setVisibility(View.VISIBLE);
-            floatingActionButtonFilterToggle.setVisibility(View.INVISIBLE);
-            isFilterVisible = true;
-        }
-    }
 
 }

@@ -16,6 +16,7 @@ import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.models.Type;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 
 
@@ -45,7 +46,7 @@ public class TypeAdapter extends RealmRecyclerViewAdapter<Type, TypeAdapter.View
     public void onBindViewHolder(final TypeAdapter.ViewHolder holder, int position) {
         holder.textViewName.setText(getItem(position).getName());
         Picasso.with(context).load(getItem(position).getIcon()).into(holder.imageViewIcon);
-        final Type type = getItem(position);
+        final Type type = Realm.getDefaultInstance().copyFromRealm(getItem(position));
         if (onItemClickListener != null) {
             holder.linearLayoutType.setOnClickListener(new View.OnClickListener() {
                 @Override

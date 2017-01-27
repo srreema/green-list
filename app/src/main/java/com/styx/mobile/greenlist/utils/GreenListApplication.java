@@ -36,9 +36,7 @@ public class GreenListApplication extends Application {
                 typeCar.getParameters().add(new Parameter("Brand"));
                 typeCar.getParameters().add(new Parameter("Year Purchased"));
                 typeCar.getParameters().add(new Parameter("Color"));
-                realm.commitTransaction();
 
-                realm.beginTransaction();
                 Type typeFlat = realm.createObject(Type.class);
                 typeFlat.setName("Flat");
                 typeFlat.getParameters().add(new Parameter("Rooms"));
@@ -47,7 +45,6 @@ public class GreenListApplication extends Application {
                 typeFlat.getParameters().add(new Parameter("Notice Period"));
                 realm.commitTransaction();
 
-                realm.beginTransaction();
                 Type typeFurniture = realm.createObject(Type.class);
                 typeFurniture.setName("Furniture");
                 typeFurniture.getParameters().add(new Parameter("Chair/Table/Shelf"));
