@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
@@ -50,11 +49,9 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import io.realm.internal.Util;
 
-public class AddListingActivity extends BaseActivity {
-    HashMap<String, String> locationData;
-
+public class AddEditListingActivity extends BaseActivity {
+    Location locationData;
     ImageAdapter imageAdapter;
     QuestionnaireAdapter questionnaireAdapter;
 
@@ -65,6 +62,9 @@ public class AddListingActivity extends BaseActivity {
     LinearLayout linearLayoutLocation;
     EditText editTextName, editTextMinPrice, editTextMaxPrice, editTextContactNumber;
 
+    long parameterListingId;
+    Listing listingToEdit;
+    boolean isEditMode = false;
 
     final String imagePrefix = "IMG_";
 
@@ -74,7 +74,16 @@ public class AddListingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addlisting);
+        getArguments();
         initializeUI();
+    }
+
+    private void getArguments() {
+        parameterListingId = getIntent().getLongExtra("parameterListingId", Utils.PARAMETER_LONG_EMPTY);
+        if (parameterListingId != Utils.PARAMETER_LONG_EMPTY) {
+            isEditMode = true;
+            listingToEdit = realm.copyFromRealm(realm.where(Listing.class).equalTo("Id", parameterListingId).findFirst());
+        }
     }
 
     void initializeUI() {
@@ -87,30 +96,64 @@ public class AddListingActivity extends BaseActivity {
         textViewSaveButton = (TextView) findViewById(R.id.textViewSaveButton);
         editTextContactNumber = (EditText) findViewById(R.id.editTextContactNumber);
 
+        /**Set data if in edit mode */
+        if (isEditMode) {
+            locationData = new Location(listingToEdit.getLocation().getName(), listingToEdit.getLocation().getLatitude(), listingToEdit.getLocation().getLongitude());
+
+            textViewLocationName.setText(listingToEdit.getLocation().getName());
+            editTextName.setText(listingToEdit.getTitle());
+            editTextMinPrice.setText(String.valueOf(listingToEdit.getMinPrice()));
+            editTextMaxPrice.setText(String.valueOf(listingToEdit.getMaxPrice()));
+            editTextContactNumber.setText(listingToEdit.getContactNumber());
+        }
+
         /** Image List **/
         recyclerViewImageList = (RecyclerView) findViewById(R.id.recyclerViewImageList);
         recyclerViewImageList.setHasFixedSize(true);
-
-        imageAdapter = new ImageAdapter(AddListingActivity.this, new ImageAdapter.OnImageViewClickListener() {
-            @Override
-            public void onImageViewClick(int position) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), Utils.REQUEST_IMAGE_PICKER);
-            }
-
-            @Override
-            public void onImageViewLongClick(int position) {
-                if (imageAdapter.getImageList().size() > 1)
-                    imageAdapter.removeImage(position);
-            }
-        });
-        recyclerViewImageList.setAdapter(imageAdapter);
-
         final LinearLayoutManager linearLayoutManagerImageList = new LinearLayoutManager(this);
         linearLayoutManagerImageList.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewImageList.setLayoutManager(linearLayoutManagerImageList);
+
+        /** Initialize with images if in edit mode **/
+        if (isEditMode) {
+            ArrayList<String> imageList = new ArrayList<>();
+            for (Photo thisPhoto : listingToEdit.getPhotos()) {
+                imageList.add(thisPhoto.getPath());
+            }
+            imageAdapter = new ImageAdapter(AddEditListingActivity.this, new ImageAdapter.OnImageViewClickListener() {
+                @Override
+                public void onImageViewClick(int position) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), Utils.REQUEST_IMAGE_PICKER);
+                }
+
+                @Override
+                public void onImageViewLongClick(int position) {
+                    if (imageAdapter.getImageList().size() > 1)
+                        imageAdapter.removeImage(position);
+                }
+            }, imageList);
+        } else {
+            imageAdapter = new ImageAdapter(AddEditListingActivity.this, new ImageAdapter.OnImageViewClickListener() {
+                @Override
+                public void onImageViewClick(int position) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), Utils.REQUEST_IMAGE_PICKER);
+                }
+
+                @Override
+                public void onImageViewLongClick(int position) {
+                    if (imageAdapter.getImageList().size() > 1)
+                        imageAdapter.removeImage(position);
+                }
+            });
+        }
+        recyclerViewImageList.setAdapter(imageAdapter);
+
 
         /** Location Picker **/
         linearLayoutLocation.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +161,7 @@ public class AddListingActivity extends BaseActivity {
             public void onClick(View v) {
                 try {
                     /** Start Google Maps Place Picker Intent **/
-                    Intent intent = builder.build(AddListingActivity.this);
+                    Intent intent = builder.build(AddEditListingActivity.this);
                     startActivityForResult(intent, Utils.REQUEST_PLACE_PICKER);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -132,13 +175,32 @@ public class AddListingActivity extends BaseActivity {
         for (Type type : typeRealmResults) {
             arrayList.add(type.getName());
         }
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         spinnerType.setAdapter(adapter);
-
+        if (isEditMode) {
+            spinnerType.setSelection(arrayList.indexOf(listingToEdit.getType().getName()));
+        }
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updateQuestionnaire((String) spinnerType.getSelectedItem());
+
+                RealmList<Parameter> parameterList = realm.where(Type.class).equalTo("name", spinnerType.getSelectedItem().toString()).findFirst().getParameters();
+
+                ArrayList<Pair<String>> thisQuestionnaire = new ArrayList<>();
+
+                /**Code to show the saved additional parameters and answers on edit mode**/
+                if (isEditMode && listingToEdit.getType().getName().equals(spinnerType.getSelectedItem().toString())) {
+                    for (AdditionalParameter additionalParameter : listingToEdit.getParameters()) {
+                        thisQuestionnaire.add(new Pair<>(additionalParameter.getKey(), additionalParameter.getValue()));
+                    }
+                } else {
+                    for (Parameter parameter : parameterList) {
+                        thisQuestionnaire.add(new Pair<>(parameter.getName(), new String()));
+                    }
+                }
+                questionnaireAdapter = new QuestionnaireAdapter(thisQuestionnaire);
+                recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
+                questionnaireAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -149,6 +211,8 @@ public class AddListingActivity extends BaseActivity {
         /** Questionnaire List **/
         recyclerViewQuestionnaire = (RecyclerView) findViewById(R.id.recyclerViewQuestionnaire);
         recyclerViewQuestionnaire.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(AddEditListingActivity.this);
+        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
 
         textViewSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,6 +222,8 @@ public class AddListingActivity extends BaseActivity {
                 }
             }
         });
+
+
     }
 
     private boolean doSaveData() {
@@ -171,76 +237,67 @@ public class AddListingActivity extends BaseActivity {
 
 
         if (minPrice > maxPrice) {
-            Toast.makeText(AddListingActivity.this, "Minimum price greater than maximum", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddEditListingActivity.this, "Minimum price greater than maximum", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (TextUtils.isEmpty(contactNumber)) {
-            Toast.makeText(AddListingActivity.this, "Enter contact number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddEditListingActivity.this, "Enter contact number", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (locationData == null) {
-            Toast.makeText(AddListingActivity.this, "Select location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddEditListingActivity.this, "Select location", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (imageList.get(0).equals(ImageAdapter.LIST_EMPTY_IMAGE)) {
-            Toast.makeText(AddListingActivity.this, "At least one image required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddEditListingActivity.this, "At least one image required", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realmInstance) {
+                long listingId;
 
-                Number currentMaxId = realmInstance.where(Listing.class).max("Id");
-                long newId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
+                if (isEditMode) {
+                    listingId = parameterListingId;
+                } else {
+                    Number currentMaxId = realmInstance.where(Listing.class).max("Id");
+                    listingId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
+                }
+                Listing thisListing = new Listing();
+                thisListing.setTitle(title);
 
-                Listing newListing = realmInstance.createObject(Listing.class, newId);
-                newListing.setTitle(title);
+                thisListing.setId(listingId);
 
-                Location locationObject = realmInstance.createObject(Location.class);
-                locationObject.setLatitude(locationData.get("latitude"));
-                locationObject.setLongitude(locationData.get("longitude"));
-                locationObject.setName(locationData.get("name"));
-                newListing.setLocation(locationObject);
+                thisListing.setLocation(realmInstance.copyToRealm(locationData));
 
-                newListing.setMinPrice(minPrice);
-                newListing.setContactNumber(contactNumber);
-                newListing.setMaxPrice(maxPrice);
-                newListing.setType(realmInstance.where(Type.class).equalTo("name", typeName).findFirst());
+
+                thisListing.setMinPrice(minPrice);
+                thisListing.setContactNumber(contactNumber);
+                thisListing.setMaxPrice(maxPrice);
+                thisListing.setType(realmInstance.where(Type.class).equalTo("name", typeName).findFirst());
 
                 for (String imageURL : imageList) {
-                    newListing.getPhotos().add(new Photo(imageURL));
+                    thisListing.getPhotos().add(new Photo(imageURL));
                 }
 
                 for (Pair<String> questionAnswer : thisQuestionnaire) {
-                    newListing.getParameters().add(new AdditionalParameter(questionAnswer.getKey(), questionAnswer.getValue()));
+                    thisListing.getParameters().add(new AdditionalParameter(questionAnswer.getKey(), questionAnswer.getValue()));
                 }
+                realmInstance.copyToRealmOrUpdate(thisListing);
+
             }
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Toast.makeText(AddListingActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddEditListingActivity.this, "Saved", Toast.LENGTH_SHORT).show();
             }
         });
 
         return true;
-    }
-
-    private void updateQuestionnaire(String selectedItem) {
-        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
-        recyclerViewQuestionnaire.setLayoutManager(linearLayoutManagerQuestionnaire);
-
-        RealmList<Parameter> parameterList = realm.where(Type.class).equalTo("name", selectedItem).findFirst().getParameters();
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (Parameter parameter : parameterList) {
-            arrayList.add(parameter.getName());
-        }
-        questionnaireAdapter = new QuestionnaireAdapter(arrayList);
-        recyclerViewQuestionnaire.setAdapter(questionnaireAdapter);
-        questionnaireAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -250,10 +307,7 @@ public class AddListingActivity extends BaseActivity {
                 if (resultCode == RESULT_OK) {
                     Place place = PlacePicker.getPlace(this, data);
 
-                    locationData = new HashMap<>();
-                    locationData.put("name", place.getName().toString());
-                    locationData.put("latitude", String.valueOf(String.valueOf((place.getLatLng()).latitude)));
-                    locationData.put("longitude", String.valueOf(String.valueOf((place.getLatLng()).longitude)));
+                    locationData = new Location(place.getName().toString(), String.valueOf(String.valueOf((place.getLatLng()).latitude)), String.valueOf(String.valueOf((place.getLatLng()).longitude)));
 
                     textViewLocationName.setText(String.format(getString(R.string.location_name), place.getName()));
                 }
@@ -294,7 +348,7 @@ public class AddListingActivity extends BaseActivity {
             if (result) {
                 imageAdapter.addImage(filepath + "/" + fileName);
             } else {
-                Toast.makeText(AddListingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddEditListingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         }
 

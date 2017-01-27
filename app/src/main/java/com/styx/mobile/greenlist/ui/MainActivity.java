@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity {
         fabAddListing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddEditListingActivity.class);
                 Utils.startActivityWithClipReveal(intent, MainActivity.this, fabAddListing);
             }
         });

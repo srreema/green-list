@@ -1,7 +1,6 @@
 package com.styx.mobile.greenlist.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,8 +22,8 @@ import com.styx.mobile.greenlist.adapters.ListingSearchAdapter;
 import com.styx.mobile.greenlist.adapters.TypeAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
 import com.styx.mobile.greenlist.models.Listing;
-import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.models.Type;
+import com.styx.mobile.greenlist.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -48,7 +47,6 @@ public class SearchActivity extends BaseActivity {
     private float searchParameterPrice;
     private String searchParameterLocation;
     private String searchParameterPrimaryKeyword;
-    public static final float PARAMETER_EMPTY = -1f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +63,7 @@ public class SearchActivity extends BaseActivity {
             searchParameterType.add(getIntent().getStringExtra("searchParameterType"));
         searchParameterPrimaryKeyword = getIntent().getStringExtra("searchParameterPrimaryKeyword");
         searchParameterLocation = getIntent().getStringExtra("searchParameterLocation");
-        searchParameterPrice = getIntent().getFloatExtra("searchParameterPrice", PARAMETER_EMPTY);
+        searchParameterPrice = getIntent().getFloatExtra("searchParameterPrice", Utils.PARAMETER_FLOAT_EMPTY);
     }
 
 
@@ -129,7 +127,7 @@ public class SearchActivity extends BaseActivity {
                                                                @Override
                                                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                                                                    if (TextUtils.isEmpty(charSequence)) {
-                                                                       searchParameterPrice = PARAMETER_EMPTY;
+                                                                       searchParameterPrice = Utils.PARAMETER_FLOAT_EMPTY;
                                                                    } else {
                                                                        searchParameterPrice = Float.parseFloat(charSequence.toString());
                                                                    }
@@ -165,7 +163,7 @@ public class SearchActivity extends BaseActivity {
                                                          @Override
                                                          public void onClick(View view) {
                                                              searchParameterLocation = searchParameterPrimaryKeyword = "";
-                                                             searchParameterPrice = PARAMETER_EMPTY;
+                                                             searchParameterPrice = Utils.PARAMETER_FLOAT_EMPTY;
                                                              searchParameterType = new ArrayList<>();
                                                              updateFilters();
                                                          }
@@ -224,7 +222,7 @@ public class SearchActivity extends BaseActivity {
             }
             filterText += ("Location near: " + searchParameterLocation + " ");
         }
-        if (searchParameterPrice != PARAMETER_EMPTY) {
+        if (searchParameterPrice != Utils.PARAMETER_FLOAT_EMPTY) {
             if (!filterText.isEmpty()) {
                 filterText += " , ";
             }
@@ -260,7 +258,7 @@ public class SearchActivity extends BaseActivity {
         if (!TextUtils.isEmpty(searchParameterLocation)) {
             realmQuery.contains("location.name", searchParameterLocation, Case.INSENSITIVE);
         }
-        if (searchParameterPrice != PARAMETER_EMPTY) {
+        if (searchParameterPrice != Utils.PARAMETER_FLOAT_EMPTY) {
             realmQuery.lessThanOrEqualTo("minPrice", searchParameterPrice);
             realmQuery.greaterThanOrEqualTo("maxPrice", searchParameterPrice);
         }

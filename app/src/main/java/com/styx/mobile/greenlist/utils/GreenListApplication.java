@@ -1,6 +1,8 @@
 package com.styx.mobile.greenlist.utils;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.facebook.stetho.Stetho;
 import com.styx.mobile.greenlist.models.Parameter;
@@ -24,6 +26,12 @@ public class GreenListApplication extends Application {
         boolean isFirstTime = Utils.isFirstTime(getApplicationContext());
         // if (isFirstTime) {
         //}
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
 

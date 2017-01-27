@@ -20,6 +20,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (realm.isClosed())
+            realm = Realm.getDefaultInstance();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         if (realm.isClosed())

@@ -11,8 +11,14 @@ public class Location extends RealmObject {
     private String latitude;
     private String longitude;
     private String name;
-    public Location(){
 
+    public Location() {
+    }
+
+    public Location(String name, String latitude, String longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getLatitude() {

@@ -22,7 +22,8 @@ public class Listing extends RealmObject {
     private RealmList<AdditionalParameter> parameters;
 
     public Listing() {
-
+        photos = new RealmList<>();
+        parameters = new RealmList<>();
     }
 
     public long getId() {

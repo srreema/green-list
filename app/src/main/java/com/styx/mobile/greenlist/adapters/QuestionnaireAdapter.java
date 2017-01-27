@@ -17,11 +17,8 @@ import java.util.ArrayList;
 public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdapter.ViewHolder> {
     private ArrayList<Pair<String>> thisQuestionnaire;
 
-    public QuestionnaireAdapter(ArrayList<String> questionList) {
-        thisQuestionnaire = new ArrayList<>();
-        for (String question : questionList) {
-            thisQuestionnaire.add(new Pair<>(question, new String()));
-        }
+    public QuestionnaireAdapter(ArrayList<Pair<String>> pairQuestionAnswer) {
+        thisQuestionnaire = pairQuestionAnswer;
     }
 
     public ArrayList<Pair<String>> getThisQuestionnaire() {
@@ -37,6 +34,7 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
     @Override
     public void onBindViewHolder(final QuestionnaireAdapter.ViewHolder holder, final int position) {
         holder.textViewQuestion.setText(thisQuestionnaire.get(position).getKey());
+        holder.textViewAnswer.setText(thisQuestionnaire.get(position).getValue());
         holder.textViewAnswer.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
