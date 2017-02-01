@@ -74,12 +74,30 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
-                <Spinner
-                    android:id="@+id/spinnerType"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:isScrollContainer="true"
-                    android:spinnerMode="dialog" />
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/spinnerType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/imageViewDeleteCategory"
+                        android:isScrollContainer="true"
+                        android:spinnerMode="dialog" />
+
+                    <ImageView
+                        android:id="@+id/imageViewDeleteCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="4dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:src="@drawable/ic_delete_sweep_black_24px"
+                        android:tint="@color/yatra_blue" />
+                </RelativeLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewParameters"

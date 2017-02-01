@@ -43,7 +43,7 @@ import io.realm.RealmResults;
 public class CategoriesActivity extends BaseActivity implements ParameterAdapter.OnEntryEditedListener {
     RecyclerView recyclerViewParameters;
     FloatingActionButton fabAddCategory;
-    ImageView imageViewBackButton, imageViewAddParameter;
+    ImageView imageViewBackButton, imageViewAddParameter, imageViewDeleteCategory;
     Spinner spinnerType;
     ParameterAdapter parameterAdapter;
     TextView textViewSaveButton;
@@ -65,6 +65,7 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
         imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
         imageViewAddParameter = (ImageView) findViewById(R.id.imageViewAddParameter);
         textViewSaveButton = (TextView) findViewById(R.id.textViewSaveButton);
+        imageViewDeleteCategory = (ImageView) findViewById(R.id.imageViewDeleteCategory);
         fabAddCategory = (FloatingActionButton) findViewById(R.id.fabAddCategory);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
         /** Questionnaire List **/
@@ -104,6 +105,7 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
                                                 realm.copyToRealmOrUpdate(type);
                                             }
                                         });
+                                        updateUI();
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -126,7 +128,19 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
                 onBackPressed();
             }
         });
-
+        imageViewDeleteCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                       // Type result = realm.where(Type.class).equalTo("Id", spinnerType.getSelectedItemPosition()).findFirst();
+                        //result.deleteFromRealm();
+                      //  updateUI();
+                    }
+                });
+            }
+        });
 
         textViewSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
