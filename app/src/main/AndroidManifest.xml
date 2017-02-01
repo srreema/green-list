@@ -37,6 +37,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDdJSUOeC52Uo_PVxT054xGgtcugmMCl8A" />
+
+        <activity android:name=".ui.CategoriesActivity"></activity>
     </application>
 
 </manifest>

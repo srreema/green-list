@@ -21,10 +21,11 @@ import com.styx.mobile.greenlist.utils.Utils;
 
 import io.realm.RealmResults;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView recyclerViewTypeList;
     EditText editTextSearch;
     FloatingActionButton fabAddListing;
+    TextView textViewEditCategoryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initializeUI() {
-        //TODO fabAddListing and edittextsearch may need to be declared final check if error
+        textViewEditCategoryButton = (TextView) findViewById(R.id.textViewEditCategoryButton);
+        textViewEditCategoryButton.setOnClickListener(this);
+
         fabAddListing = (FloatingActionButton) findViewById(R.id.fabAddListing);
         recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
 
@@ -79,5 +82,15 @@ public class MainActivity extends BaseActivity {
                 return handled;
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.textViewEditCategoryButton:
+                Intent intent = new Intent(MainActivity.this, CategoriesActivity.class);
+                Utils.startActivityWithClipReveal(intent, MainActivity.this, view);
+                break;
+        }
     }
 }

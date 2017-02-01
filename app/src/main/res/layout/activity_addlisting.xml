@@ -131,7 +131,7 @@
                     android:layout_height="24dp"
                     android:layout_marginLeft="4dp"
                     android:padding="2dp"
-                    android:src="@drawable/ic_ta" />
+                    android:src="@drawable/ic_map_black_24dp" />
             </LinearLayout>
 
         </RelativeLayout>
