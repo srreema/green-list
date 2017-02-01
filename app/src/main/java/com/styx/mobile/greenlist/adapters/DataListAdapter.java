@@ -37,7 +37,7 @@ public class DataListAdapter extends RealmRecyclerViewAdapter<AdditionalParamete
 
     @Override
     public void onBindViewHolder(final DataListAdapter.ViewHolder holder, final int position) {
-        holder.textViewQuestion.setText(getItem(position).getKey());
+        holder.textViewQuestion.setText(getItem(position).getParameter().getName());
         holder.textViewAnswer.setText(getItem(position).getValue());
     }
 

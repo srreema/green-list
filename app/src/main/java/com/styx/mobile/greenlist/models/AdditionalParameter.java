@@ -7,11 +7,11 @@ import io.realm.RealmObject;
  */
 
 public class AdditionalParameter extends RealmObject {
-    private String key;
+    private Parameter parameter;
     private String value;
 
-    public AdditionalParameter(String key, String value) {
-        this.key = key;
+    public AdditionalParameter(Parameter key, String value) {
+        this.parameter = key;
         this.value = value;
     }
 
@@ -19,12 +19,12 @@ public class AdditionalParameter extends RealmObject {
 
     }
 
-    public String getKey() {
-        return key;
+    public Parameter getParameter() {
+        return parameter;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setParameter(Parameter parameter) {
+        this.parameter = parameter;
     }
 
     public void setValue(String value) {

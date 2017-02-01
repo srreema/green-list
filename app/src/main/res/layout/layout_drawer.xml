@@ -28,7 +28,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/app_red"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/img_building_2" />
+                    android:src="@drawable/img_city_8" />
 
                 <TextView
                     android:id="@+id/textViewSearchTitle"
@@ -50,11 +50,11 @@
                 android:background="@color/grey_300" />
 
             <TextView
+                android:id="@+id/textViewEditCategoryButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_profile_name"
                 android:layout_marginLeft="0dp"
-                android:id="@+id/textViewEditCategoryButton"
                 android:layout_marginRight="0dp"
                 android:background="?selectableItemBackground"
                 android:clickable="true"

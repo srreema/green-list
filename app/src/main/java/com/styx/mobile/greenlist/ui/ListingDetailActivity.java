@@ -49,7 +49,7 @@ public class ListingDetailActivity extends BaseActivity {
     }
 
     private void updateFields() {
-
+        //TODO erre
         ArrayList<String> photoList = new ArrayList<>();
         for (Photo photo : thisListing.getPhotos()) {
             photoList.add(photo.getPath());

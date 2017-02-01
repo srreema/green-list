@@ -193,8 +193,19 @@ public class AddEditListingActivity extends BaseActivity {
 
                 /**Code to show the saved additional parameters and answers on edit mode**/
                 if (isEditMode && listingToEdit.getType().getName().equals(spinnerType.getSelectedItem().toString())) {
-                    for (AdditionalParameter additionalParameter : listingToEdit.getParameters()) {
-                        thisQuestionnaire.add(new Pair<>(additionalParameter.getKey(), additionalParameter.getValue()));
+                    for (Parameter parameter : parameterList) {
+                        boolean flag = false;
+                        for (AdditionalParameter additionalParameter : listingToEdit.getParameters()) {
+                            if (additionalParameter.getParameter().getName().equals(parameter.getName())) {
+                                thisQuestionnaire.add(new Pair<>(additionalParameter.getParameter().getName(), additionalParameter.getValue()));
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) {
+                            thisQuestionnaire.add(new Pair<>(parameter.getName(), new String()));
+                        }
+//                        thisQuestionnaire.add(new Pair<>(additionalParameter.getParameter().getName(), additionalParameter.getValue()));
                     }
                 } else {
                     for (Parameter parameter : parameterList) {
@@ -285,7 +296,7 @@ public class AddEditListingActivity extends BaseActivity {
                 }
 
                 for (Pair<String> questionAnswer : thisQuestionnaire) {
-                    thisListing.getParameters().add(new AdditionalParameter(questionAnswer.getKey(), questionAnswer.getValue()));
+                    thisListing.getParameters().add(new AdditionalParameter(new Parameter(questionAnswer.getKey()), questionAnswer.getValue()));
                 }
                 realmInstance.copyToRealmOrUpdate(thisListing);
 
