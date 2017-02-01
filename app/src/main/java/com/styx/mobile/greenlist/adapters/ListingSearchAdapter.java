@@ -68,7 +68,7 @@ public class ListingSearchAdapter extends RealmRecyclerViewAdapter<Listing, List
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ListingDetailActivity.class);
-                intent.putExtra("Id", Id);
+                intent.putExtra("parameterListingId", Id);
                 Utils.startActivityWithClipReveal(intent, context, holder.linearLayoutListingParent);
             }
         });

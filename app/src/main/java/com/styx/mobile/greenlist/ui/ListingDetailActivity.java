@@ -35,21 +35,16 @@ public class ListingDetailActivity extends BaseActivity {
     Listing thisListing;
     TextView textViewType, textViewTitle, textViewContactNumber, textViewMaxPrice, textViewMinPrice, textViewLocationName, textViewEditButton;
     RecyclerView recyclerViewDataList;
+    ImageView imageViewBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        currentListingID = getIntent().getExtras().getLong("Id");
-
-        thisListing =realm.where(Listing.class).equalTo("Id", currentListingID).findFirst();
+        currentListingID = getIntent().getExtras().getLong("parameterListingId");
+        thisListing = realm.where(Listing.class).equalTo("Id", currentListingID).findFirst();
         initializeUI();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         updateFields();
     }
 
@@ -104,6 +99,7 @@ public class ListingDetailActivity extends BaseActivity {
         textViewMaxPrice = (TextView) findViewById(R.id.textViewMaxPrice);
         textViewLocationName = (TextView) findViewById(R.id.textViewLocationName);
         textViewEditButton = (TextView) findViewById(R.id.textViewEditButton);
+        imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
 
 
         LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(this);
@@ -114,6 +110,14 @@ public class ListingDetailActivity extends BaseActivity {
                 Intent intent = new Intent(ListingDetailActivity.this, AddEditListingActivity.class);
                 intent.putExtra("parameterListingId", thisListing.getId());
                 startActivity(intent);
+                finish();
+            }
+        });
+
+        imageViewBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 

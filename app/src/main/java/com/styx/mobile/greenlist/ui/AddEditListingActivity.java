@@ -83,6 +83,9 @@ public class AddEditListingActivity extends BaseActivity {
         if (parameterListingId != Utils.PARAMETER_LONG_EMPTY) {
             isEditMode = true;
             listingToEdit = realm.copyFromRealm(realm.where(Listing.class).equalTo("Id", parameterListingId).findFirst());
+        } else {
+            Number currentMaxId = realm.where(Listing.class).max("Id");
+            parameterListingId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
         }
     }
 
@@ -218,6 +221,9 @@ public class AddEditListingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (doSaveData()) {
+                    Intent intent = new Intent(AddEditListingActivity.this, ListingDetailActivity.class);
+                    intent.putExtra("parameterListingId", parameterListingId);
+                    startActivity(intent);
                     finish();
                 }
             }
@@ -259,14 +265,8 @@ public class AddEditListingActivity extends BaseActivity {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realmInstance) {
-                long listingId;
+                long listingId = parameterListingId;
 
-                if (isEditMode) {
-                    listingId = parameterListingId;
-                } else {
-                    Number currentMaxId = realmInstance.where(Listing.class).max("Id");
-                    listingId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
-                }
                 Listing thisListing = new Listing();
                 thisListing.setTitle(title);
 

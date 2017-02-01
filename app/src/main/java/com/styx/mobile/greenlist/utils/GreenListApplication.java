@@ -22,10 +22,6 @@ public class GreenListApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initializeRealmStetho();
-
-        boolean isFirstTime = Utils.isFirstTime(getApplicationContext());
-        // if (isFirstTime) {
-        //}
     }
 
     @Override
@@ -51,7 +47,6 @@ public class GreenListApplication extends Application {
                 typeFlat.getParameters().add(new Parameter("Kitchen"));
                 typeFlat.getParameters().add(new Parameter("Bath Attached"));
                 typeFlat.getParameters().add(new Parameter("Notice Period"));
-                realm.commitTransaction();
 
                 Type typeFurniture = realm.createObject(Type.class);
                 typeFurniture.setName("Furniture");
