@@ -1,17 +1,22 @@
 package com.styx.mobile.greenlist.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,6 +42,7 @@ import io.realm.RealmResults;
 
 public class CategoriesActivity extends BaseActivity implements ParameterAdapter.OnEntryEditedListener {
     RecyclerView recyclerViewParameters;
+    FloatingActionButton fabAddCategory;
     ImageView imageViewBackButton, imageViewAddParameter;
     Spinner spinnerType;
     ParameterAdapter parameterAdapter;
@@ -49,11 +55,88 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
         initializeUI();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void initializeUI() {
         imageViewBackButton = (ImageView) findViewById(R.id.imageViewBackButton);
         imageViewAddParameter = (ImageView) findViewById(R.id.imageViewAddParameter);
         textViewSaveButton = (TextView) findViewById(R.id.textViewSaveButton);
+        fabAddCategory = (FloatingActionButton) findViewById(R.id.fabAddCategory);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
+        /** Questionnaire List **/
+        recyclerViewParameters = (RecyclerView) findViewById(R.id.recyclerViewParameters);
+        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(CategoriesActivity.this);
+        recyclerViewParameters.setLayoutManager(linearLayoutManagerQuestionnaire);
+        fabAddCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get prompts.xml view
+                LayoutInflater li = LayoutInflater.from(CategoriesActivity.this);
+                View promptsView = li.inflate(R.layout.layout_dialogue_category, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        CategoriesActivity.this);
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userInput = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserInput);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                Type type = new Type();
+                                                Number currentMaxId = realm.where(Type.class).max("Id");
+                                                long parameterListingId = ((currentMaxId == null) ? 0 : (currentMaxId.longValue() + 1));
+                                                type.setName(userInput.getText().toString());
+                                                type.setId(parameterListingId);
+                                                realm.copyToRealmOrUpdate(type);
+                                            }
+                                        });
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
+        });
+        imageViewBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
+        textViewSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSaveType();
+            }
+        });
+    }
+
+    private void updateUI() {
         ArrayList<String> arrayList = new ArrayList<>();
         final RealmResults<Type> typeRealmResults = realm.where(Type.class).findAll();
         for (Type type : typeRealmResults) {
@@ -80,25 +163,6 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
             @Override
             public void onClick(View v) {
                 parameterAdapter.add();
-            }
-        });
-
-        imageViewBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        /** Questionnaire List **/
-        recyclerViewParameters = (RecyclerView) findViewById(R.id.recyclerViewParameters);
-        LinearLayoutManager linearLayoutManagerQuestionnaire = new LinearLayoutManager(CategoriesActivity.this);
-        recyclerViewParameters.setLayoutManager(linearLayoutManagerQuestionnaire);
-
-        textViewSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSaveType();
             }
         });
     }
