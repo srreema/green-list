@@ -32,4 +32,13 @@
     <string name="search_result_count">%1$d Search results found</string>
     <string name="search_location_hint">near</string>
 
+    <!--Preferences-->
+    <string name="preference_file_key">APP_DATA</string>
+    <string name="saved_password">app_password</string>
+
+    <!--Social Data-->
+    <string name="social_facebook">https://www.facebook.com/amalgta</string>
+    <string name="social_youtube">http://youtube.com/amalgta</string>
+    <string name="social_github">http://github.com/amalgta</string>
+    <string name="social_twitter">http://twitter.com/amalgta</string>
 </resources>

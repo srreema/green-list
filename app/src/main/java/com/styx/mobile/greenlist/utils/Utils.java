@@ -1,8 +1,10 @@
 package com.styx.mobile.greenlist.utils;
 
 import android.app.ActivityOptions;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
@@ -26,7 +28,29 @@ public class Utils {
     public static final int REQUEST_IMAGE_PICKER = 1001;
     public static final float PARAMETER_FLOAT_EMPTY = -1f;
     public static final long PARAMETER_LONG_EMPTY = -1;
+    public static final String PARAMETER_STRING_EMPTY = "EMPTY";
 
+    public static Intent getGenericIntent(String url) {
+        return new Intent(Intent.ACTION_VIEW,
+                Uri.parse(url));
+    }
+
+    public static Intent getFacebookIntent(String profile_id) {
+        try {
+            return new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("fb://profile/" + profile_id));
+        } catch (Exception e) {
+            return getGenericIntent("https://www.facebook.com/" + profile_id);
+        }
+    }
+
+    public static Intent getMarketIntent(Context context) {
+        try {
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName()));
+        } catch (ActivityNotFoundException e) {
+            return getGenericIntent("http://play.google.com/store/apps/details?id=" + context.getPackageName());
+        }
+    }
 
     public static void animationIn(final View view, final int animation, int delayTime, final Context context) {
         Handler handler = new Handler();

@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView recyclerViewTypeList;
     EditText editTextSearch;
     FloatingActionButton fabAddListing;
-    TextView textViewEditCategoryButton;
+    TextView drawerButtonCategory, drawerButtonCategorySettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initializeUI() {
-        textViewEditCategoryButton = (TextView) findViewById(R.id.textViewEditCategoryButton);
-        textViewEditCategoryButton.setOnClickListener(this);
+        drawerButtonCategory = (TextView) findViewById(R.id.drawerButtonSettings);
+        drawerButtonCategory.setOnClickListener(this);
+        drawerButtonCategorySettings = (TextView) findViewById(R.id.drawerButtonCategory);
+        drawerButtonCategorySettings.setOnClickListener(this);
 
         fabAddListing = (FloatingActionButton) findViewById(R.id.fabAddListing);
         recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
@@ -87,9 +89,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.textViewEditCategoryButton:
-                Intent intent = new Intent(MainActivity.this, CategoriesActivity.class);
-                Utils.startActivityWithClipReveal(intent, MainActivity.this, view);
+            case R.id.drawerButtonCategory:
+                Intent intentCategory = new Intent(MainActivity.this, CategoriesActivity.class);
+                Utils.startActivityWithClipReveal(intentCategory, MainActivity.this, view);
+                break;
+            case R.id.drawerButtonSettings:
+                Intent intentSettings = new Intent(MainActivity.this, CategoriesActivity.class);
+                Utils.startActivityWithClipReveal(intentSettings, MainActivity.this, view);
                 break;
         }
     }
