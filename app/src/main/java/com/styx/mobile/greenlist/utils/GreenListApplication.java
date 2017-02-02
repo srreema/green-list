@@ -4,11 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import com.facebook.stetho.Stetho;
 import com.styx.mobile.greenlist.models.Parameter;
-import com.styx.mobile.greenlist.models.Photo;
 import com.styx.mobile.greenlist.models.Type;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -21,7 +18,7 @@ public class GreenListApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initializeRealmStetho();
+        initializeRealm();
     }
 
     @Override
@@ -31,7 +28,7 @@ public class GreenListApplication extends Application {
     }
 
 
-    private void initializeRealmStetho() {
+    private void initializeRealm() {
         Realm.Transaction initialData = new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -72,11 +69,5 @@ public class GreenListApplication extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
-
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-                        .build());
     }
 }
