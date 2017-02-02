@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="about"
+        android:title="@string/about">
+        <Preference
+            android:key="version"
+            android:title="@string/version" />
+        <Preference
+            android:key="rate_the_app"
+            android:summary="@string/five_stars"
+            android:title="@string/rate_the_app" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="social"
+        android:title="@string/social">
+        <Preference
+            android:icon="@drawable/ic_social_facebook"
+            android:key="facebook"
+            android:summary="@string/follow_me_on_facebook"
+            android:title="@string/facebook" />
+        <Preference
+            android:icon="@drawable/ic_social_github"
+            android:key="github"
+            android:summary="@string/follow_me_on_github"
+            android:title="@string/github" />
+        <Preference
+            android:icon="@drawable/ic_social_youtube"
+            android:key="youtube"
+            android:summary="@string/follow_me_on_youtube"
+            android:title="@string/youtube" />
+        <Preference
+            android:icon="@drawable/ic_social_twitter"
+            android:key="twitter"
+            android:summary="@string/follow_me_on_twitter"
+            android:title="@string/twitter" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="legal"
+        android:title="@string/legal">
+        <Preference
+            android:key="copyright"
+            android:summary="@string/copyright_summary"
+            android:title="@string/copyright" />
+        <Preference
+            android:key="open_source_licenses"
+            android:title="@string/open_source_licenses" />
+        <Preference
+            android:key="terms_of_service"
+            android:title="@string/terms_of_service" />
+        <Preference
+            android:key="privacy_policy"
+            android:title="@string/privacy_policy" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

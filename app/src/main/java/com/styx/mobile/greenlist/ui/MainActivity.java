@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView recyclerViewTypeList;
     EditText editTextSearch;
     FloatingActionButton fabAddListing;
-    TextView drawerButtonCategory, drawerButtonCategorySettings;
+    TextView drawerButtonCategory, drawerButtonAbout, drawerButtonSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initializeUI() {
-        drawerButtonCategory = (TextView) findViewById(R.id.drawerButtonSettings);
+        drawerButtonCategory = (TextView) findViewById(R.id.drawerButtonCategory);
         drawerButtonCategory.setOnClickListener(this);
-        drawerButtonCategorySettings = (TextView) findViewById(R.id.drawerButtonCategory);
-        drawerButtonCategorySettings.setOnClickListener(this);
+        drawerButtonAbout = (TextView) findViewById(R.id.drawerButtonAbout);
+        drawerButtonAbout.setOnClickListener(this);
+        drawerButtonSettings = (TextView) findViewById(R.id.drawerButtonSettings);
+        drawerButtonSettings.setOnClickListener(this);
 
         fabAddListing = (FloatingActionButton) findViewById(R.id.fabAddListing);
         recyclerViewTypeList = (RecyclerView) findViewById(R.id.recyclerViewTypeList);
@@ -93,8 +95,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 Intent intentCategory = new Intent(MainActivity.this, CategoriesActivity.class);
                 Utils.startActivityWithClipReveal(intentCategory, MainActivity.this, view);
                 break;
+            case R.id.drawerButtonAbout:
+                Intent intentAbout= new Intent(MainActivity.this, AboutActivity.class);
+                Utils.startActivityWithClipReveal(intentAbout, MainActivity.this, view);
+                break;
             case R.id.drawerButtonSettings:
-                Intent intentSettings = new Intent(MainActivity.this, CategoriesActivity.class);
+                Intent intentSettings = new Intent(MainActivity.this, SettingsActivity.class);
                 Utils.startActivityWithClipReveal(intentSettings, MainActivity.this, view);
                 break;
         }

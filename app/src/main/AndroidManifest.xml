@@ -34,6 +34,7 @@
             android:name=".ui.SearchActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".ui.ListingDetailActivity" />
+        <activity android:name=".ui.AboutActivity" />
         <activity android:name=".ui.SettingsActivity" />
 
 

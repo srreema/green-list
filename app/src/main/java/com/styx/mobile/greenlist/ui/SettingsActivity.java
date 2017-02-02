@@ -1,43 +1,32 @@
 package com.styx.mobile.greenlist.ui;
 
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.styx.mobile.greenlist.R;
-import com.styx.mobile.greenlist.utils.Utils;
 
 /**
  *
  */
 
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener {
-    private int numTimesVersionClicked;
-    boolean isLoading = false;
-    private static final String TAG = "AboutPreferenceFragment";
-    int MAX_CLICKS_TO_UNLOCK_REG = 9;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.pref_about);
-        Preference prefVersion = findPreference("version");
+        addPreferencesFromResource(R.xml.preference_setttings);
 
-        PackageManager pm = getPackageManager();
-        try {
-            prefVersion.setSummary(pm.getPackageInfo(getPackageName(), 0).versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.wtf(TAG, "Error getting our own package name");
-        }
 
-        // Set an OnPreferenceClickListener on all Preferences.
-        // Just set the OnPreferenceClickListener for the prefVersion in a normal project.
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean isPasswordEnabled = sharedPreferences.getBoolean("isPasswordEnabled", false);
+        Preference prefAppKey = findPreference("appPasskey");
+        prefAppKey.setEnabled(isPasswordEnabled);
+
+
         PreferenceScreen screen = getPreferenceScreen();
         for (int i = 0; i < screen.getPreferenceCount(); i++) {
             Preference preference = screen.getPreference(i);
@@ -54,29 +43,9 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference == findPreference("copyright")) {
-            if (++numTimesVersionClicked == MAX_CLICKS_TO_UNLOCK_REG && !isLoading) {
-                numTimesVersionClicked = 0;
-                Toast.makeText(SettingsActivity.this, preference.getTitle().toString() + " Being written.", Toast.LENGTH_LONG).show();
-
-            }
-        } else if ((preference == findPreference("legal")) || (preference == findPreference("open_source_licenses")) || (preference == findPreference("terms_of_service")) || (preference == findPreference("privacy_policy"))) {
-            Toast.makeText(SettingsActivity.this, preference.getTitle().toString() + " Being written.", Toast.LENGTH_LONG).show();
-        } else if (preference == findPreference("facebook")) {
-            Intent facebookIntent = Utils.getFacebookIntent(getString(R.string.social_facebook));
-            startActivity(facebookIntent);
-        } else if (preference == findPreference("github")) {
-            Intent facebookIntent = Utils.getGenericIntent(getString(R.string.social_github));
-            startActivity(facebookIntent);
-        } else if (preference == findPreference("youtube")) {
-            Intent facebookIntent = Utils.getGenericIntent(getString(R.string.social_youtube));
-            startActivity(facebookIntent);
-        } else if (preference == findPreference("twitter")) {
-            Intent facebookIntent = Utils.getGenericIntent(getString(R.string.social_twitter));
-            startActivity(facebookIntent);
-        } else if (preference == findPreference("rate_the_app")) {
-            Intent facebookIntent = Utils.getMarketIntent(SettingsActivity.this);
-            startActivity(facebookIntent);
+        if (preference == findPreference("isPasswordEnabled")) {
+            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            findPreference("appPasskey").setEnabled(sharedPreferences.getBoolean("isPasswordEnabled", false));
         }
         return true;
     }

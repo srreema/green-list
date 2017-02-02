@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="security"
+        android:title="Security">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="isPasswordEnabled"
+            android:summary="Ask for a password to authenticate each time you open app"
+            android:title="Enable password protection" />
+        s<EditTextPreference
+            android:inputType="number"
+            android:key="appPasskey"
+            android:summary="Enter a passkey" />
+    </PreferenceCategory>
+</PreferenceScreen>

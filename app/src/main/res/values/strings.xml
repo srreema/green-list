@@ -34,11 +34,45 @@
 
     <!--Preferences-->
     <string name="preference_file_key">APP_DATA</string>
-    <string name="saved_password">app_password</string>
 
     <!--Social Data-->
     <string name="social_facebook">https://www.facebook.com/amalgta</string>
     <string name="social_youtube">http://youtube.com/amalgta</string>
     <string name="social_github">http://github.com/amalgta</string>
     <string name="social_twitter">http://twitter.com/amalgta</string>
+
+    <!--About Screen-->
+    <string name="copyright">Copyright</string>
+    <string name="copyright_summary" translatable="false">2016, Amal Thomas</string>
+    <string name="beta_program_summary">Become a beta tester</string>
+    <string name="open_source_licenses">Open source licenses</string>
+    <string name="follow_me_on_twitter">Follow me on Twitter</string>
+    <string name="follow_me_on_youtube">Follow my channel on YouTube</string>
+    <string name="follow_me_on_github">Follow me on GitHub</string>
+    <string name="follow_me_on_facebook">Follow me on Facebook</string>
+    <string name="settings">Settings</string>
+    <string name="five_stars">5 stars</string>
+    <string name="about">About</string>
+    <string name="like_page">Like Page</string>
+    <string name="version">Version</string>
+    <string name="terms_of_service">Terms of service</string>
+    <string name="facebook">Facebook</string>
+    <string name="official_website">Official website</string>
+    <string name="youtube">YouTube</string>
+    <string name="github">GitHub</string>
+    <string name="feedback">Feedback</string>
+    <string name="social">Social</string>
+    <string name="help">Help</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="preferences">Preferences</string>
+    <string name="changelog">Changelog</string>
+    <string name="google_community">Google+ community</string>
+    <string name="beta_program">Beta program</string>
+    <string name="rate_the_app">Rate the app</string>
+    <string name="developed_by">Developed by</string>
+    <string name="follow_us">Follow us</string>
+    <string name="legal">Legal</string>
+    <string name="support">Support</string>
+    <string name="twitter">Twitter</string>
+    <string name="date_of_birth">Date of Birth</string>
 </resources>
