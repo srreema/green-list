@@ -245,14 +245,22 @@ public class AddEditListingActivity extends BaseActivity {
 
     private boolean doSaveData() {
         final String title = editTextName.getText().toString();
-        final Float minPrice = Float.parseFloat(editTextMinPrice.getText().toString());
-        final Float maxPrice = Float.parseFloat(editTextMaxPrice.getText().toString());
+
         final String typeName = spinnerType.getSelectedItem().toString();
         final String contactNumber = PhoneNumberUtils.formatNumber(editTextContactNumber.getText().toString());
         final ArrayList<String> imageList = imageAdapter.getImageList();
         final ArrayList<Pair<String>> thisQuestionnaire = questionnaireAdapter.getThisQuestionnaire();
 
-
+        if (TextUtils.isEmpty(editTextMinPrice.getText().toString())) {
+            Toast.makeText(AddEditListingActivity.this, "Minimum price empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(editTextMaxPrice.getText().toString())) {
+            Toast.makeText(AddEditListingActivity.this, "Maximum price empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        final Float minPrice = Float.parseFloat(editTextMinPrice.getText().toString());
+        final Float maxPrice = Float.parseFloat(editTextMaxPrice.getText().toString());
         if (minPrice > maxPrice) {
             Toast.makeText(AddEditListingActivity.this, "Minimum price greater than maximum", Toast.LENGTH_SHORT).show();
             return false;
