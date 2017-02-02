@@ -2,6 +2,7 @@ package com.styx.mobile.greenlist.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.vision.text.Text;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.models.Parameter;
 import com.styx.mobile.greenlist.utils.Pair;
@@ -97,7 +99,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
     }
 
     public void add() {
-        if (parameterList.isEmpty() || (!parameterList.get(parameterList.size() - 1).getName().equals(""))) {
+        if (parameterList.isEmpty() || !TextUtils.isEmpty(parameterList.get(parameterList.size() - 1).getName())) {
             parameterList.add(new Parameter());
             notifyItemInserted(parameterList.size());
             onModify();

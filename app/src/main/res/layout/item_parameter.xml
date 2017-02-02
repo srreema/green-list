@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/imageViewDelete"
         android:fontFamily="@string/font_family_light"
-        android:inputType="text"
+        android:inputType="text|textCapWords"
         android:maxLines="1"
         android:textColor="@color/app_dark_100"
         android:textSize="14sp" />

@@ -1,17 +1,11 @@
 package com.styx.mobile.greenlist.ui;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,12 +19,9 @@ import android.widget.Toast;
 import com.styx.mobile.greenlist.R;
 import com.styx.mobile.greenlist.adapters.ParameterAdapter;
 import com.styx.mobile.greenlist.base.BaseActivity;
-import com.styx.mobile.greenlist.models.AdditionalParameter;
 import com.styx.mobile.greenlist.models.Listing;
 import com.styx.mobile.greenlist.models.Parameter;
-import com.styx.mobile.greenlist.models.Photo;
 import com.styx.mobile.greenlist.models.Type;
-import com.styx.mobile.greenlist.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,23 +66,13 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
         fabAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // get prompts.xml view
-                LayoutInflater li = LayoutInflater.from(CategoriesActivity.this);
-                View promptsView = li.inflate(R.layout.layout_dialogue_category, null);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        CategoriesActivity.this);
-
-                // set prompts.xml to alertdialog builder
-                alertDialogBuilder.setView(promptsView);
-
-                final EditText userInput = (EditText) promptsView
-                        .findViewById(R.id.editTextDialogUserInput);
-
-                // set dialog message
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
+                LayoutInflater layoutInflater = LayoutInflater.from(CategoriesActivity.this);
+                View dialogueView = layoutInflater.inflate(R.layout.layout_dialogue_category, null);
+                final EditText userInput = (EditText) dialogueView.findViewById(R.id.dialogUserInput);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CategoriesActivity.this).setView(dialogueView);
+                builder.setMessage("Add new category");
+                builder.setCancelable(true)
+                        .setPositiveButton("Create",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         realm.executeTransaction(new Realm.Transaction() {
@@ -114,11 +95,7 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
                                         dialog.cancel();
                                     }
                                 });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
+                AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
         });
@@ -131,14 +108,32 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
         imageViewDeleteCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                realm.executeTransaction(new Realm.Transaction() {
+                final String type = spinnerType.getSelectedItem().toString();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CategoriesActivity.this);
+                alertDialogBuilder.setMessage("Deleting will remove all listings under this category");
+                alertDialogBuilder.setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                realm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        realm.where(Listing.class).equalTo("type.name", type).findAll().deleteAllFromRealm();
+                                        realm.where(Type.class).equalTo("name", type).findFirst().deleteFromRealm();
+                                    }
+                                });
+                                updateUI();
+                            }
+                        });
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void execute(Realm realm) {
-                       // Type result = realm.where(Type.class).equalTo("Id", spinnerType.getSelectedItemPosition()).findFirst();
-                        //result.deleteFromRealm();
-                      //  updateUI();
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
                     }
                 });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
 
@@ -156,8 +151,10 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
         for (Type type : typeRealmResults) {
             arrayList.add(type.getName());
         }
+        imageViewDeleteCategory.setVisibility((typeRealmResults.size() > 1 ? View.VISIBLE : View.GONE));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         spinnerType.setAdapter(adapter);
+        spinnerType.setSelection(typeRealmResults.size() - 1);
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -195,13 +192,14 @@ public class CategoriesActivity extends BaseActivity implements ParameterAdapter
             @Override
             public void onSuccess() {
                 Toast.makeText(CategoriesActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                onEntryEdited(false);
             }
         });
     }
 
     @Override
     public void onEntryEdited(boolean isEdited) {
-        textViewSaveButton.setVisibility(View.VISIBLE);
+        textViewSaveButton.setVisibility(isEdited ? View.VISIBLE : View.INVISIBLE);
     }
 
 }

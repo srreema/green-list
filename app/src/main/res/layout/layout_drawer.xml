@@ -37,7 +37,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_margin="16dp"
                     android:fontFamily="@string/font_family_medium"
-                    android:text="Test"
+                    android:text="@string/app_name"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -61,19 +61,6 @@
                 android:fontFamily="@string/font_family_light"
                 android:padding="16dp"
                 android:text="Category"
-                android:textColor="@color/app_dark_100"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_profile_name"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:background="?selectableItemBackground"
-                android:fontFamily="@string/font_family_light"
-                android:padding="16dp"
-                android:text="Search"
                 android:textColor="@color/app_dark_100"
                 android:textSize="16sp" />
 
