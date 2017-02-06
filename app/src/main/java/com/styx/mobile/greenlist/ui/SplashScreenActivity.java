@@ -57,7 +57,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             final String appPasskey = sharedPreferences.getString("appPasskey", Utils.PARAMETER_STRING_EMPTY);
-                            if (!TextUtils.isEmpty(userInput.getText()) && userInput.getText().toString().equals(appPasskey)) {
+                            if (userInput.getText().toString().equals(appPasskey)) {
                                 alertDialog.dismiss();
                                 startMainActivity();
                             } else {

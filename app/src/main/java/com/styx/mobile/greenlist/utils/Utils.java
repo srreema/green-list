@@ -28,7 +28,7 @@ public class Utils {
     public static final int REQUEST_IMAGE_PICKER = 1001;
     public static final float PARAMETER_FLOAT_EMPTY = -1f;
     public static final long PARAMETER_LONG_EMPTY = -1;
-    public static final String PARAMETER_STRING_EMPTY = "EMPTY";
+    public static final String PARAMETER_STRING_EMPTY = "";
 
     public static Intent getGenericIntent(String url) {
         return new Intent(Intent.ACTION_VIEW,
@@ -81,7 +81,7 @@ public class Utils {
     }
 
     public static void startActivityWithClipReveal(Intent intent, Context context, View view) {
-        ActivityOptions options = null;
+        ActivityOptions options;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             options = ActivityOptions.makeClipRevealAnimation(view, 0, 0,
                     view.getWidth(), view.getHeight());
